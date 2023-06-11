@@ -5,12 +5,12 @@ from fastapi import (
     Depends,
 )
 from sqlalchemy.sql import text
-from sqlmodel import Session
+from sqlalchemy.orm import Session
 
-from app.core.config import API_VERSION
-from app.db import get_session
+from app.config.app import API_VERSION
+from app.config.database import get_db
 
-api = import_module(f".{API_VERSION}", package="app.api")
+api = import_module(f".{API_VERSION}", package="app.routes")
 router = APIRouter()
 
 
@@ -19,7 +19,7 @@ router = APIRouter()
     response_model=dict,
     tags=["Healthcheck"],
 )
-async def db_version(session: Session = Depends(get_session)):
+async def db_version(session: Session = Depends(get_db)):
     version = session.execute(text("select sqlite_version()")).one()
 
     return {"version": version}

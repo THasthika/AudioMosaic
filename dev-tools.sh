@@ -9,7 +9,7 @@ _make_migration() {
         exit 1
     fi
     # Call alembic revision command with the provided string
-    alembic revision --autogenerate -m "$1"
+    DATABASE_URL=$DATABASE_URL alembic revision --autogenerate -m "$1"
 }
 
 _migrate_up() {

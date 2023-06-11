@@ -1,19 +1,15 @@
 from uuid import UUID, uuid4
 from datetime import datetime
-from sqlmodel import Field, SQLModel
+from app.config.database import Base
+from sqlalchemy import Column, String, DateTime
+from app.utils.guid import GUID
 
 
-class DatasetBase(SQLModel):
-    name: str
+class Dataset(Base):
+    __tablename__ = "datasets"
 
-
-class Dataset(DatasetBase, table=True):
-    id: UUID = Field(default_factory=uuid4, primary_key=True)
-    created_at: datetime = Field(
-        default_factory=datetime.utcnow, nullable=False)
-    updated_at: datetime = Field(
-        default_factory=datetime.utcnow, nullable=False)
-
-
-class DatasetCreate(DatasetBase):
-    pass
+    id = Column(GUID(), primary_key=True, index=True, default=uuid4)
+    name = Column(String, nullable=False)
+    created_at = Column(DateTime, nullable=False, default=datetime.utcnow)
+    updated_at = Column(DateTime, nullable=False,
+                        default=datetime.utcnow, onupdate=datetime.utcnow)
