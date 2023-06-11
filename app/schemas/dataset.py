@@ -11,6 +11,10 @@ class DatasetCreate(DatasetBase):
     pass
 
 
+class DatasetUpdate(DatasetBase):
+    name: str | None
+
+
 class DatasetQuery(DatasetBase):
     name: str | None
     offset: int
