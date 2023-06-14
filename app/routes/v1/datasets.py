@@ -20,8 +20,7 @@ async def list_datasets(page: Annotated[int, Query(ge=1)] = 1,
                         limit: Annotated[int, Query(ge=1, le=50)] = 10,
                         db: get_db = Depends()):
     query = DatasetQuery(name=None, offset=(page - 1) * limit, limit=limit)
-    service = DatasetService(db)
-    datasets = service.list_datasets(query)
+    datasets = DatasetService(db).list_datasets(query)
     return handle_result(datasets)
 
 
@@ -29,8 +28,7 @@ async def list_datasets(page: Annotated[int, Query(ge=1)] = 1,
              status_code=status.HTTP_201_CREATED, tags=["Datasets"])
 async def create_dataset(dataset_create: DatasetCreate,
                          db: get_db = Depends()):
-    service = DatasetService(db)
-    dataset = service.create_dataset(dataset_create)
+    dataset = DatasetService(db).create_dataset(dataset_create)
     return handle_result(dataset)
 
 
@@ -38,8 +36,7 @@ async def create_dataset(dataset_create: DatasetCreate,
               status_code=status.HTTP_200_OK, tags=["Datasets"])
 async def update_dataset(id: UUID, dataset_update: DatasetUpdate,
                          db: get_db = Depends()):
-    service = DatasetService(db)
-    updated_dataset = service.update_dataset(id, dataset_update)
+    updated_dataset = DatasetService(db).update_dataset(id, dataset_update)
     return handle_result(updated_dataset)
 
 

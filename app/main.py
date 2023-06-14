@@ -9,12 +9,12 @@ from app.config.app import (
     PROJECT_NAME,
     ROOT_PATH,
 )
-from app.utils.app_exceptions import AppExceptionCase
+from app.exceptions.base import AppExceptionCase
 from app.utils.request_exceptions import (
     request_validation_exception_handler,
     http_exception_handler
 )
-from app.utils.app_exceptions import app_exception_handler
+from app.exceptions.base import app_exception_handler
 
 app = FastAPI(
     root_path=ROOT_PATH,
