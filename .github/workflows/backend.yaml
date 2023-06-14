@@ -31,4 +31,4 @@ jobs:
         options: "--check --verbose -l 80"
       - name: Test with pytest
         run: |
-          pytest
+          bash ./run-test.sh
