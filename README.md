@@ -10,7 +10,7 @@ AudioMosaic is an Audio Dataset Manager designed specifically for Machine Learni
 - **Metadata Management**: Annotate and manage metadata associated with your audio files, including labels, tags, and any other relevant information.
 - **Preprocessing**: Apply various preprocessing techniques to your audio data, such as audio augmentation, feature extraction, and signal processing.
 - **Audio Augmentation**: Perform data augmentation on your audio files to increase the diversity and robustness of your dataset. Apply techniques like time stretching, pitch shifting, background noise addition, and more.
-- Visualization: Visualize audio waveforms, spectrograms, and other audio representations to gain insights into your dataset.
+- **Visualization**: Visualize audio waveforms, spectrograms, and other audio representations to gain insights into your dataset.
 - **Data Splitting**: Split your dataset into training, validation, and testing subsets, ensuring proper evaluation of your machine learning models.
 - **Export**: Export your processed dataset in a format suitable for your machine learning framework or library.
 
@@ -33,7 +33,7 @@ poetry install
 
 ## Contributing
 
-Contributions are welcome! If you have any ideas, suggestions, or bug reports, please open an issue in the AudioMosaic repository. See our Contributing Guidelines for more information.
+Contributions are welcome! If you have any ideas, suggestions, or bug reports, please open an issue in the AudioMosaic repository. See our [Contributing Guidelines](http://github.com/THasthika/AudioMosaic/CONTRIBUTING) for more information.
 
 ## License
 
