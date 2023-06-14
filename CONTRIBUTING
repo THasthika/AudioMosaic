@@ -1,0 +1,43 @@
+# Contribution Guidelines
+
+Thank you for considering contributing to AudioMosaic! We welcome your ideas, suggestions, bug reports, and contributions to make AudioMosaic even better. By contributing, you help improve the functionality, usability, and reliability of our audio dataset manager for machine learning projects.
+
+To ensure a smooth and efficient collaboration process, please follow these guidelines when contributing to AudioMosaic:
+
+## Opening an Issue
+
+If you have a feature request, bug report, or any other non-trivial change in mind, please open an issue in the [AudioMosaic repository](https://github.com/THasthika/AudioMosaic/issues). Provide a clear and concise description of the issue or request, including any relevant details, steps to reproduce, and expected behavior.
+
+## Making Changes
+
+If you wish to contribute code changes or enhancements to AudioMosaic, please follow these steps:
+
+1. Fork the AudioMosaic repository to your GitHub account.
+2. Create a new branch in your forked repository for your changes.
+3. Make the necessary code changes, following the coding style and guidelines of the project.
+4. Ensure that your changes maintain the integrity and functionality of AudioMosaic. Run the existing tests and, if applicable, add new tests to validate your changes.
+5. Document any new functionality, changes, or additions in the appropriate sections of the README or relevant documentation.
+6. Commit your changes with clear and descriptive commit messages.
+7. Push your branch to your forked repository.
+8. Open a pull request from your branch to the main branch of the AudioMosaic repository.
+
+## Pull Request Guidelines
+
+When submitting a pull request, please ensure the following:
+
+1. Provide a clear and descriptive title for your pull request, summarizing the changes you have made.
+2. Include a detailed description of the changes made, explaining the rationale behind them and any considerations or implications that reviewers should be aware of.
+3. Reference any related issues or pull requests in the description using the appropriate linking syntax (e.g., "Fixes #123" or "Addresses #456").
+4. Keep your pull requests focused and limited to a single logical change or feature. If you have multiple contributions, please submit them as separate pull requests.
+5. Ensure that all tests pass successfully and, if applicable, provide tests for any new functionality or changes introduced.
+6. Be responsive to any feedback, comments, or requests for changes from the maintainers. Engage in the discussion to address concerns or clarify intentions.
+
+## Code of Conduct
+
+When contributing to AudioMosaic. Treat all individuals with respect, maintain a friendly and inclusive atmosphere, and ensure a harassment-free experience for everyone.
+
+## License
+
+By contributing to AudioMosaic, you agree that your contributions will be licensed under the same [MIT License](http://github.com/THasthika/AudioMosaic/LICENSE) as the project.
+
+We appreciate your valuable contributions and look forward to working together to improve AudioMosaic. Thank you for your support!
