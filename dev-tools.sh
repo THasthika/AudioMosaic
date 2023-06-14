@@ -9,15 +9,15 @@ _make_migration() {
         exit 1
     fi
     # Call alembic revision command with the provided string
-    DATABASE_URL=$DATABASE_URL alembic revision --autogenerate -m "$1"
+    DATABASE_URL=$DATABASE_URL poetry run alembic revision --autogenerate -m "$1"
 }
 
 _migrate_up() {
-    DATABASE_URL=$DATABASE_URL alembic upgrade head
+    DATABASE_URL=$DATABASE_URL poetry run alembic upgrade head
 }
 
 _run() {
-    DATABASE_URL=$DATABASE_URL uvicorn app.main:app --reload
+    DATABASE_URL=$DATABASE_URL poetry run uvicorn app.main:app --reload
 }
 
 # Check if the argument count is less than 1

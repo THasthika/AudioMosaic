@@ -1,6 +1,6 @@
 import inspect
 
-from app.utils.app_exceptions import AppExceptionCase
+from app.exceptions.base import AppExceptionCase
 
 
 class ServiceResult(object):

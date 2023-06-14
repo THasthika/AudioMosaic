@@ -20,7 +20,7 @@ router = APIRouter()
     tags=["Healthcheck"],
 )
 async def db_version(session: Session = Depends(get_db)):
-    version = session.execute(text("select sqlite_version()")).one()
+    version = session.execute(text("select sqlite_version()")).first()[0]
 
     return {"version": version}
 

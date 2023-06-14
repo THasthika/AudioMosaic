@@ -1,14 +1,6 @@
 from sqlalchemy.orm import Session
 
 
-class DBSessionContext(object):
+class BaseService:
     def __init__(self, db: Session) -> None:
         self.db = db
-
-
-class AppService(DBSessionContext):
-    pass
-
-
-class AppCRUD(DBSessionContext):
-    pass
