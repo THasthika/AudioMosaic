@@ -13,15 +13,17 @@ def test_create_label():
     # Create a dataset
     test_request_payload = {"name": "Dataset with Labels"}
     create_response = client.post(
-        "/api/v1/datasets", content=json.dumps(test_request_payload),)
+        "/api/v1/datasets",
+        content=json.dumps(test_request_payload),
+    )
     assert create_response.status_code == 201
     dataset_id = create_response.json()["id"]
 
     test_request_payload = {"name": "Label A", "dataset_id": dataset_id}
 
     response = client.post(
-        "/api/v1/labels/",
-        content=json.dumps(test_request_payload))
+        "/api/v1/labels/", content=json.dumps(test_request_payload)
+    )
 
     assert response.status_code == 201
     assert response.json()["name"] == test_request_payload["name"]
@@ -31,7 +33,9 @@ def test_list_labels():
     # Create a label
     test_request_payload = {"name": "Label B", "dataset_id": dataset_id}
     create_response = client.post(
-        "/api/v1/labels", content=json.dumps(test_request_payload),)
+        "/api/v1/labels",
+        content=json.dumps(test_request_payload),
+    )
     assert create_response.status_code == 201
 
     # List labels
@@ -47,7 +51,9 @@ def test_get_label():
     # Create a label
     test_request_payload = {"name": "Label C", "dataset_id": dataset_id}
     create_response = client.post(
-        "/api/v1/labels", content=json.dumps(test_request_payload),)
+        "/api/v1/labels",
+        content=json.dumps(test_request_payload),
+    )
     assert create_response.status_code == 201
     label_id = create_response.json()["id"]
 
@@ -60,14 +66,17 @@ def test_update_label():
     # Create a label
     test_request_payload = {"name": "Label D", "dataset_id": dataset_id}
     create_response = client.post(
-        "/api/v1/labels", content=json.dumps(test_request_payload),)
+        "/api/v1/labels",
+        content=json.dumps(test_request_payload),
+    )
     assert create_response.status_code == 201
     label_id = create_response.json()["id"]
 
     # Update the label
     update_payload = {"name": "Updated Label D"}
     response = client.patch(
-        f"/api/v1/labels/label/{label_id}", content=json.dumps(update_payload))
+        f"/api/v1/labels/label/{label_id}", content=json.dumps(update_payload)
+    )
     assert response.status_code == 200
 
     # Check if the title name is updated
@@ -79,7 +88,9 @@ def test_delete_label():
     # Create a label
     test_request_payload = {"name": "Label E", "dataset_id": dataset_id}
     create_response = client.post(
-        "/api/v1/labels", content=json.dumps(test_request_payload),)
+        "/api/v1/labels",
+        content=json.dumps(test_request_payload),
+    )
     assert create_response.status_code == 201
     label_id = create_response.json()["id"]
 

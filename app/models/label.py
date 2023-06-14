@@ -14,9 +14,13 @@ class Label(Base):
     name = Column(String, nullable=False)
     dataset_id = Column(GUID(), ForeignKey(Dataset.id))
     created_at = Column(DateTime, nullable=False, default=datetime.utcnow)
-    updated_at = Column(DateTime, nullable=False,
-                        default=datetime.utcnow, onupdate=datetime.utcnow)
+    updated_at = Column(
+        DateTime,
+        nullable=False,
+        default=datetime.utcnow,
+        onupdate=datetime.utcnow,
+    )
 
-    dataset = relationship('Dataset', foreign_keys='Label.dataset_id')
+    dataset = relationship("Dataset", foreign_keys="Label.dataset_id")
 
-    __table_args__ = (UniqueConstraint('dataset_id', 'name'),)
+    __table_args__ = (UniqueConstraint("dataset_id", "name"),)

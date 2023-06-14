@@ -12,7 +12,7 @@ from app.config.app import (
 from app.exceptions.base import AppExceptionCase
 from app.utils.request_exceptions import (
     request_validation_exception_handler,
-    http_exception_handler
+    http_exception_handler,
 )
 from app.exceptions.base import app_exception_handler
 
@@ -38,5 +38,6 @@ async def custom_validation_exception_handler(request, e):
 @app.exception_handler(AppExceptionCase)
 async def custom_app_exception_handler(request, e):
     return await app_exception_handler(request, e)
+
 
 app.include_router(api_router, prefix="/api")

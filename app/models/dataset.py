@@ -11,5 +11,9 @@ class Dataset(Base):
     id = Column(GUID(), primary_key=True, index=True, default=uuid4)
     name = Column(String, nullable=False)
     created_at = Column(DateTime, nullable=False, default=datetime.utcnow)
-    updated_at = Column(DateTime, nullable=False,
-                        default=datetime.utcnow, onupdate=datetime.utcnow)
+    updated_at = Column(
+        DateTime,
+        nullable=False,
+        default=datetime.utcnow,
+        onupdate=datetime.utcnow,
+    )

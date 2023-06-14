@@ -3,13 +3,12 @@ from uuid import UUID
 from abc import abstractmethod
 
 
-class BaseRepository():
+class BaseRepository:
     def __init__(self, db: Session) -> None:
         self.db = db
 
 
 class BaseCRUDRepository(BaseRepository):
-
     ModelType = NotImplementedError
     ModelCreateType = NotImplementedError
     ModelUpdateType = NotImplementedError
@@ -20,14 +19,15 @@ class BaseCRUDRepository(BaseRepository):
         super().__init__(db)
 
     @abstractmethod
-    def get_model_from_create_type(self,
-                                   create_type: ModelCreateType) -> ModelType:
+    def get_model_from_create_type(
+        self, create_type: ModelCreateType
+    ) -> ModelType:
         raise NotImplementedError()
 
     @abstractmethod
-    def get_model_from_update_type(self,
-                                   current_model: ModelType,
-                                   update_model: ModelUpdateType) -> ModelType:
+    def get_model_from_update_type(
+        self, current_model: ModelType, update_model: ModelUpdateType
+    ) -> ModelType:
         raise NotImplementedError()
 
     def get_all(self):
@@ -35,8 +35,11 @@ class BaseCRUDRepository(BaseRepository):
         return items
 
     def get_by_id(self, id: UUID):
-        item = self.db.query(self.ModelType).filter(
-            self.ModelType.id == id).first()
+        item = (
+            self.db.query(self.ModelType)
+            .filter(self.ModelType.id == id)
+            .first()
+        )
         return item
 
     def create(self, create_type: ModelCreateType):
@@ -51,7 +54,8 @@ class BaseCRUDRepository(BaseRepository):
         if current_model is None:
             raise self.ItemNotFoundException()
         updated_model = self.get_model_from_update_type(
-            current_model, update_type)
+            current_model, update_type
+        )
         self.db.commit()
         self.db.refresh(updated_model)
         return updated_model

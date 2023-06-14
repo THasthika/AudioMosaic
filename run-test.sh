@@ -1,3 +1,5 @@
+#!/bin/bash
+
 DB_PATH=./.test_db.db
 DATABASE_URL=sqlite:///$DB_PATH
 

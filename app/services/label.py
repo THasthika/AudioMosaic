@@ -1,9 +1,7 @@
 from .base import BaseService
 from app.repositories import LabelRepository
 from uuid import UUID
-from app.schemas.label import (
-    LabelCreate, LabelUpdate, LabelItem
-)
+from app.schemas.label import LabelCreate, LabelUpdate, LabelItem
 from app.models.label import Label
 from app.utils.service_result import ServiceResult
 from app.exceptions.base import AppExceptionCase
@@ -12,7 +10,6 @@ from sqlalchemy.exc import IntegrityError
 
 
 class LabelService(BaseService):
-
     def create_label(self, create_label: LabelCreate) -> ServiceResult:
         try:
             created_label = LabelRepository(self.db).create(create_label)
@@ -27,21 +24,23 @@ class LabelService(BaseService):
 
     def list_labels_by_dataset_id(self, dataset_id: UUID) -> ServiceResult:
         try:
-            labels = self.db.query(Label).filter(
-                Label.dataset_id == dataset_id).all()
+            labels = (
+                self.db.query(Label)
+                .filter(Label.dataset_id == dataset_id)
+                .all()
+            )
             labels = list(map(lambda x: LabelItem.from_orm(x), labels))
             return ServiceResult(labels)
         except Exception as e:
             print(e)
             # TODO: Make the exception more refined
-            return ServiceResult(label_exceptions.
-                                 AppExceptionCase(500, None))
+            return ServiceResult(label_exceptions.AppExceptionCase(500, None))
 
-    def update_label(self, id: UUID, update_label: LabelUpdate)\
-            -> ServiceResult:
+    def update_label(
+        self, id: UUID, update_label: LabelUpdate
+    ) -> ServiceResult:
         try:
-            updated_label = LabelRepository(
-                self.db).update(id, update_label)
+            updated_label = LabelRepository(self.db).update(id, update_label)
             return ServiceResult(LabelItem.from_orm(updated_label))
         except AppExceptionCase as e:
             return ServiceResult(e)

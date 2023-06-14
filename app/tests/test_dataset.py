@@ -9,7 +9,9 @@ def test_create_dataset():
     test_request_payload = {"name": "Dataset A"}
 
     response = client.post(
-        "/api/v1/datasets", content=json.dumps(test_request_payload),)
+        "/api/v1/datasets",
+        content=json.dumps(test_request_payload),
+    )
 
     assert response.status_code == 201
     # Add additional assertions to validate the response body, if necessary
@@ -19,7 +21,9 @@ def test_list_datasets():
     # Create a dataset
     test_request_payload = {"name": "Dataset B"}
     create_response = client.post(
-        "/api/v1/datasets", content=json.dumps(test_request_payload),)
+        "/api/v1/datasets",
+        content=json.dumps(test_request_payload),
+    )
     assert create_response.status_code == 201
 
     # List datasets
@@ -35,7 +39,9 @@ def test_get_dataset():
     # Create a dataset
     test_request_payload = {"name": "Dataset C"}
     create_response = client.post(
-        "/api/v1/datasets", content=json.dumps(test_request_payload),)
+        "/api/v1/datasets",
+        content=json.dumps(test_request_payload),
+    )
     assert create_response.status_code == 201
     dataset_id = create_response.json()["id"]
 
@@ -48,14 +54,17 @@ def test_update_dataset():
     # Create a dataset
     test_request_payload = {"name": "Dataset D"}
     create_response = client.post(
-        "/api/v1/datasets", content=json.dumps(test_request_payload),)
+        "/api/v1/datasets",
+        content=json.dumps(test_request_payload),
+    )
     assert create_response.status_code == 201
     dataset_id = create_response.json()["id"]
 
     # Update the dataset
     update_payload = {"name": "Updated Dataset D"}
     response = client.patch(
-        f"/api/v1/datasets/{dataset_id}", content=json.dumps(update_payload))
+        f"/api/v1/datasets/{dataset_id}", content=json.dumps(update_payload)
+    )
     assert response.status_code == 200
 
     # Check if the title name is updated
@@ -67,7 +76,9 @@ def test_delete_dataset():
     # Create a dataset
     test_request_payload = {"name": "Dataset E"}
     create_response = client.post(
-        "/api/v1/datasets", content=json.dumps(test_request_payload),)
+        "/api/v1/datasets",
+        content=json.dumps(test_request_payload),
+    )
     assert create_response.status_code == 201
     dataset_id = create_response.json()["id"]
 
