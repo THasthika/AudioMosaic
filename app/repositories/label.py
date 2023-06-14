@@ -1,25 +1,26 @@
 from sqlalchemy.orm import Session
 from .base import BaseCRUDRepository
-from app.exceptions.dataset import DatasetNotFound
-from app.models.dataset import Dataset
-from app.schemas.dataset import DatasetCreate, DatasetUpdate
+from app.exceptions.label import LabelNotFound
+from app.models.label import Label
+from app.schemas.label import LabelCreate, LabelUpdate
 
 
-class DatasetRepository(BaseCRUDRepository):
+class LabelRepository(BaseCRUDRepository):
 
-    ModelType = Dataset
-    ModelCreateType = DatasetCreate
-    ModelUpdateType = DatasetUpdate
+    ModelType = Label
+    ModelCreateType = LabelCreate
+    ModelUpdateType = LabelUpdate
 
-    ItemNotFoundException = DatasetNotFound
+    ItemNotFoundException = LabelNotFound
 
     def __init__(self, db: Session) -> None:
         super().__init__(db)
 
     def get_model_from_create_type(self,
                                    create_type: ModelCreateType) -> ModelType:
-        return Dataset(
-            name=create_type.name
+        return Label(
+            name=create_type.name,
+            dataset_id=create_type.dataset_id
         )
 
     def get_model_from_update_type(self,

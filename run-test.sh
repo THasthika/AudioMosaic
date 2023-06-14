@@ -1,4 +1,4 @@
-DB_PATH=./test_db.db
+DB_PATH=./.test_db.db
 DATABASE_URL=sqlite:///$DB_PATH
 
 rm -f $DB_PATH

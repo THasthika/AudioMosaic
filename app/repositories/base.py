@@ -16,9 +16,8 @@ class BaseCRUDRepository(BaseRepository):
 
     ItemNotFoundException = NotImplementedError
 
-    def __init__(self, db: Session, entity: ModelType) -> None:
+    def __init__(self, db: Session) -> None:
         super().__init__(db)
-        self.entity = entity
 
     @abstractmethod
     def get_model_from_create_type(self,
@@ -32,11 +31,12 @@ class BaseCRUDRepository(BaseRepository):
         raise NotImplementedError()
 
     def get_all(self):
-        items = self.db.query(self.model)
+        items = self.db.query(self.ModelType)
         return items
 
     def get_by_id(self, id: UUID):
-        item = self.db.query(self.entity).filter(self.entity.id == id).first()
+        item = self.db.query(self.ModelType).filter(
+            self.ModelType.id == id).first()
         return item
 
     def create(self, create_type: ModelCreateType):
