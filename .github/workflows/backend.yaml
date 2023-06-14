@@ -28,7 +28,8 @@ jobs:
           poetry install
       - name: Lint with balck
         uses: psf/black@stable
-        options: "--check --verbose -l 80"
+        with:
+          options: "--check --verbose -l 80"
       - name: Test with pytest
         run: |
           bash ./run-test.sh
