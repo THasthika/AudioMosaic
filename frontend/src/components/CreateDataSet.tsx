@@ -6,6 +6,7 @@ import { useState } from 'react';
 interface DataSet {
     name: string;
     lables: Lable[];
+    file?: File;
 }
 interface Lable {
     name: string;
@@ -71,7 +72,12 @@ const CreateDataSet = () => {
         if(!validateUploadedFile(file)){
             // TODO: Replace with error handling
             console.log("File validation failed");
+            return
         }
+        setDataSet({
+            ...dataSet,
+            file
+        })
     }
 
     const handleOnSubmit = () => {
@@ -104,7 +110,7 @@ const CreateDataSet = () => {
                     <label className="label">
                         <span className="label-text">Upload audio file</span>
                     </label>
-                    <input type="file" className="file-input file-input-bordered w-full" onChange={handleUploadFile}/>
+                    <input type="file" className="file-input file-input-bordered w-full" accept=".mp3, .wav" onChange={handleUploadFile}/>
                 </div>
             </div>
             <button className='btn mt-8' onClick={handleOnSubmit}>Save</button>
