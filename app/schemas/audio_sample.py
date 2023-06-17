@@ -34,6 +34,7 @@ class AudioSampleUpdate(AudioSampleBase):
 
 class AudioSampleItem(AudioSampleBase):
     id: UUID
+    dataset_id: UUID
 
     class Config:
         orm_mode = True

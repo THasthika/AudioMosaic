@@ -5,7 +5,7 @@ from app.models.audio_sample import AudioSample
 from app.schemas.audio_sample import AudioSampleCreate, AudioSampleUpdate
 
 
-class LabelRepository(BaseCRUDRepository):
+class AudioSampleRepository(BaseCRUDRepository):
     ModelType = AudioSample
     ModelCreateType = AudioSampleCreate
     ModelUpdateType = AudioSampleUpdate
@@ -32,7 +32,6 @@ class LabelRepository(BaseCRUDRepository):
     def get_model_from_update_type(
         self, current_model: ModelType, update_model: ModelUpdateType
     ) -> ModelType:
-
         if update_model.path is not None:
             current_model.path = update_model.path
         if update_model.parent_id is not None:
