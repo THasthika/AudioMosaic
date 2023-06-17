@@ -1,13 +1,15 @@
 from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
 from fastapi.exceptions import RequestValidationError
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
-from app.routes import router as api_router
+from app.routes import router
 from app.config.app import (
     API_VERSION,
     DEBUG,
     PROJECT_NAME,
     ROOT_PATH,
+    APP_DIST_PATH,
 )
 from app.exceptions.base import AppExceptionCase
 from app.utils.request_exceptions import (
@@ -40,4 +42,9 @@ async def custom_app_exception_handler(request, e):
     return await app_exception_handler(request, e)
 
 
-app.include_router(api_router, prefix="/api")
+app.include_router(router)
+
+# frontend
+app.mount(
+    "/", StaticFiles(directory=APP_DIST_PATH, html=True), name="Frontend App"
+)
