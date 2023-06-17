@@ -1,4 +1,4 @@
 #!/bin/bash
 
-black ./app/**/*.py -l 80
-black ./migrations/**/*.py -l 80
+black ./app -v -l 80
+black ./migrations -l 80

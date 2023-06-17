@@ -9,7 +9,7 @@ from app.config.app import (
     DEBUG,
     PROJECT_NAME,
     ROOT_PATH,
-    APP_DIST_PATH
+    APP_DIST_PATH,
 )
 from app.exceptions.base import AppExceptionCase
 from app.utils.request_exceptions import (
@@ -45,5 +45,6 @@ async def custom_app_exception_handler(request, e):
 app.include_router(router)
 
 # frontend
-app.mount("/", StaticFiles(
-    directory=APP_DIST_PATH, html=True), name="Frontend App")
+app.mount(
+    "/", StaticFiles(directory=APP_DIST_PATH, html=True), name="Frontend App"
+)
