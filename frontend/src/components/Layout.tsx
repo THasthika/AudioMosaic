@@ -1,5 +1,4 @@
-import React from 'react'
-import CreateDataSet from '/src/components/CreateDataSet'
+import CreateDataSet from '@/components/CreateDataSet'
 
 
 const Layout = () => {
