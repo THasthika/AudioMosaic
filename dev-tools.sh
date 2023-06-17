@@ -17,6 +17,7 @@ _migrate_up() {
 }
 
 _run() {
+    (cd ./frontend && pnpm run build)
     DATABASE_URL=$DATABASE_URL poetry run uvicorn app.main:app --reload
 }
 
