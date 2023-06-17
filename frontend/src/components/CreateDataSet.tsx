@@ -1,5 +1,6 @@
 import plusIcon from '@/assets/icons/plus-icon.svg'
 import trashIcon from '@/assets/icons/trash-icon.svg'
+import { validateUploadedFile } from '@/helpers/validate-upload-file';
 import { useState } from 'react';
 
 interface DataSet {
@@ -57,12 +58,20 @@ const CreateDataSet = () => {
     }
 
     const handleDeleteLable = (index: number): void => {
-        if(dataSet.lables.length === 1) return
+        if (dataSet.lables.length === 1) return
         const modifiedLables = dataSet.lables.filter((lable, idx) => idx !== index)
         setDataSet({
             ...dataSet,
             lables: modifiedLables
         })
+    }
+
+    const handleUploadFile = (e: React.ChangeEvent<HTMLInputElement>)=>{
+        const file: File = e.target.files![0]
+        if(!validateUploadedFile(file)){
+            // TODO: Replace with error handling
+            console.log("File validation failed");
+        }
     }
 
     const handleOnSubmit = () => {
@@ -91,6 +100,12 @@ const CreateDataSet = () => {
                     </div>
                 )
                 )}
+                <div>
+                    <label className="label">
+                        <span className="label-text">Upload audio file</span>
+                    </label>
+                    <input type="file" className="file-input file-input-bordered w-full" onChange={handleUploadFile}/>
+                </div>
             </div>
             <button className='btn mt-8' onClick={handleOnSubmit}>Save</button>
         </div >
