@@ -7,7 +7,7 @@ class LabelBase(BaseModel):
 
 
 class LabelCreate(LabelBase):
-    dataset_id: UUID
+    dataset_id: UUID | None
 
 
 class LabelUpdate(LabelBase):
