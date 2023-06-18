@@ -1,20 +1,9 @@
 import plusIcon from '@/assets/icons/plus-icon.svg'
 import trashIcon from '@/assets/icons/trash-icon.svg'
 import { validateUploadedFile } from '@/helpers/validate-upload-file';
+import { postDataset } from '@/services/datasets.service';
+import { DataSet, LableType } from '@/types';
 import { useState } from 'react';
-
-interface DataSet {
-    name: string;
-    lables: Lable[];
-    file?: File;
-}
-interface Lable {
-    name: string;
-    color: string;
-    description: string;
-}
-type LableType = 'name' | 'description' | 'color';
-
 
 const CreateDataSet = () => {
     const defaultColor = '#036FE2'
@@ -80,8 +69,8 @@ const CreateDataSet = () => {
         })
     }
 
-    const handleOnSubmit = () => {
-        console.log(dataSet);
+    const handleOnSubmit = async() => {
+        await postDataset(dataSet)
     }
 
     return (
