@@ -60,7 +60,7 @@ const CreateDataSet = () => {
 
     const handleDeleteLable = (index: number): void => {
         if (dataSet.lables.length === 1) return
-        const modifiedLables = dataSet.lables.filter((lable, idx) => idx !== index)
+        const modifiedLables = dataSet.lables.filter((_, idx) => idx !== index)
         setDataSet({
             ...dataSet,
             lables: modifiedLables
@@ -86,7 +86,8 @@ const CreateDataSet = () => {
 
     return (
         <div className='flex flex-col  items-center pt-12'>
-            <div className="flex flex flex-col gap-4">
+            <h2 className='text-2xl'>Create new dataset</h2>
+            <div className="flex flex flex-col gap-4 mt-12">
                 <input type="text" placeholder="Dataset Name" className="input input-bordered input-primary w-full" value={dataSet.name} onChange={onChangeDataSetName} />
                 {dataSet?.lables.map((label, index) =>
                 (
@@ -97,10 +98,10 @@ const CreateDataSet = () => {
                             <span><input type="color" value={label.color} onChange={(e) => onChangeDataSetLable(e, index)} name="color" /></span>
                         </label>
                         <button className="btn btn-sm btn-circle btn-outline">
-                            <img src={plusIcon} alt="plus icon" onClick={handleAddNewLable} />
+                            <img className="w-4" src={plusIcon} alt="plus icon" onClick={handleAddNewLable} />
                         </button>
                         <button className="btn btn-sm btn-circle btn-outline">
-                            <img src={trashIcon} alt="trash icon" onClick={() => handleDeleteLable(index)} />
+                            <img className="w-4" src={trashIcon} alt="trash icon" onClick={() => handleDeleteLable(index)} />
                         </button>
 
                     </div>
