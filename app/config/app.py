@@ -10,3 +10,5 @@ ROOT_PATH = os.getenv("ROOT_PATH", "")
 API_KEY = os.getenv("API_KEY")
 API_KEY_NAME = "X-API-KEY"
 ALLOWED_HOSTS = CommaSeparatedStrings(os.getenv("ALLOWED_HOSTS", "*"))
+
+APP_DIST_PATH = os.getenv("APP_DIST_PATH", os.path.join("frontend", "dist"))
