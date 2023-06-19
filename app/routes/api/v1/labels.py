@@ -21,14 +21,20 @@ async def list_labels(dataset_id: UUID, db: get_db = Depends()):
 
 
 @router.post(
-    "",
-    response_model=LabelItem,
+    "/{dataset_id}",
+    response_model=list[LabelItem],
     status_code=status.HTTP_201_CREATED,
     tags=["Labels"],
 )
-async def create_label(label_create: LabelCreate, db: get_db = Depends()):
-    label = LabelService(db).create_label(label_create)
-    return handle_result(label)
+async def create_labels(
+    dataset_id: UUID,
+    label_create_list: list[LabelCreate],
+    db: get_db = Depends(),
+):
+    for label in label_create_list:
+        label.dataset_id = dataset_id
+    labels = LabelService(db).create_labels(label_create_list)
+    return handle_result(labels)
 
 
 @router.patch(

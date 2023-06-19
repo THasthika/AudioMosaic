@@ -15,6 +15,17 @@ class LabelRepository(BaseCRUDRepository):
     def __init__(self, db: Session) -> None:
         super().__init__(db)
 
+    def bulk_create(
+        self, create_labels: list[ModelCreateType]
+    ) -> list[ModelType]:
+        with self.db.begin():
+            ret: list[LabelRepository.ModelType] = []
+            for create_label in create_labels:
+                label = self.get_model_from_create_type(create_label)
+                self.db.add(label)
+            ret.append(label)
+            return ret
+
     def get_model_from_create_type(
         self, create_type: ModelCreateType
     ) -> ModelType:
