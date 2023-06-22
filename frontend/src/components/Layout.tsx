@@ -8,11 +8,12 @@ const Layout = () => {
       <div className="navbar px-8">
         <div className="navbar-start">
           <img src="/favicon.png" width="55px" alt="" />
-          <span className="normal-case text-xl ml-4">AudioMosaic</span>
+          <span className="normal-case text-xl ml-4">
+            <Link to="/">AudioMosaic</Link>
+          </span>
         </div>
         <div className="navbar-end gap-8">
-          <Link to="/">Create a Dataset</Link>
-          <Link to="/view">View Datasets</Link>
+          <Link to="/create">Create a Dataset</Link>
           <button className="btn btn-circle">
             <div className="indicator">
               <img className="w-6" src={bellIcon} alt="bell icon" />
