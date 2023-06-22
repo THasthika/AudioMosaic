@@ -4,6 +4,7 @@ import { validateUploadedFile } from '@/helpers/validate-upload-file';
 import { postDataset } from '@/services/datasets.service';
 import { DataSet, LableType } from '@/types';
 import { useState } from 'react';
+import { toast } from 'react-toastify';
 
 const CreateDataSet = () => {
     const defaultColor = '#036FE2'
@@ -69,8 +70,9 @@ const CreateDataSet = () => {
         })
     }
 
-    const handleOnSubmit = async() => {
-        await postDataset(dataSet)
+    const handleOnSubmit = async(): Promise<void> => {
+        if(!await postDataset(dataSet)) return
+        toast.success("Your new dataset has been saved successfully")
     }
 
     return (
