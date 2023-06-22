@@ -12,6 +12,8 @@ class Label(Base):
 
     id = Column(GUID(), primary_key=True, index=True, default=uuid4)
     name = Column(String, nullable=False)
+    color = Column(String, nullable=False)
+    description = Column(String, default="")
     dataset_id = Column(GUID(), ForeignKey(Dataset.id))
     created_at = Column(DateTime, nullable=False, default=datetime.utcnow)
     updated_at = Column(

@@ -29,12 +29,21 @@ class LabelRepository(BaseCRUDRepository):
     def get_model_from_create_type(
         self, create_type: ModelCreateType
     ) -> ModelType:
-        return Label(name=create_type.name, dataset_id=create_type.dataset_id)
+        return Label(
+            name=create_type.name,
+            color=create_type.color,
+            description=create_type.description,
+            dataset_id=create_type.dataset_id,
+        )
 
     def get_model_from_update_type(
         self, current_model: ModelType, update_model: ModelUpdateType
     ) -> ModelType:
         if update_model.name is not None:
             current_model.name = update_model.name
+        if update_model.color is not None:
+            current_model.color = update_model.color
+        if update_model.description is not None:
+            current_model.description = update_model.description
 
         return current_model
