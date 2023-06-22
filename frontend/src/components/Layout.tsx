@@ -6,7 +6,8 @@ const Layout = () => {
     <div className="flex flex-col min-h-screen">
       <div className="navbar px-8">
         <div className="navbar-start">
-          <span className="normal-case text-xl">AudioMosaic</span>
+          <img src="/favicon.png" width="55px" alt="" />
+          <span className="normal-case text-xl ml-4">AudioMosaic</span>
         </div>
         <div className="navbar-end">
           <button className="btn btn-circle">
