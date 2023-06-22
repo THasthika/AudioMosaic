@@ -2,7 +2,10 @@ from sqlalchemy.orm import Session
 from .base import BaseCRUDRepository
 from app.exceptions.label import LabelNotFound
 from app.models.audio_sample_label import AudioSampleLabel
-from app.schemas.audio_sample_label import AudioSampleLabelCreate, AudioSampleLabelUpdate
+from app.schemas.audio_sample_label import (
+    AudioSampleLabelCreate,
+    AudioSampleLabelUpdate,
+)
 
 
 class AudioSampleLabelRepository(BaseCRUDRepository):

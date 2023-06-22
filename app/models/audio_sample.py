@@ -46,9 +46,10 @@ class AudioSample(Base):
         default=AudioSampleApprovalStatus.PENDING,
     )
 
-    sample_rate = Column(Integer)
-    bit_rate = Column(Integer)
-    duration = Column(Float(precision=10, decimal_return_scale=2))
+    sample_rate = Column(Integer, nullable=True)
+    bit_rate = Column(Integer, nullable=True)
+    duration = Column(
+        Float(precision=10, decimal_return_scale=2), nullable=True)
 
     created_at = Column(DateTime, nullable=False, default=datetime.utcnow)
     updated_at = Column(

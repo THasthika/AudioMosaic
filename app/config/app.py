@@ -12,3 +12,6 @@ API_KEY_NAME = "X-API-KEY"
 ALLOWED_HOSTS = CommaSeparatedStrings(os.getenv("ALLOWED_HOSTS", "*"))
 
 APP_DIST_PATH = os.getenv("APP_DIST_PATH", os.path.join("frontend", "dist"))
+
+STORAGE_PATH = os.getenv("STORAGE_PATH", "storage")
+STORAGE_TYPE = os.getenv("STORAGE_TYPE", "local")

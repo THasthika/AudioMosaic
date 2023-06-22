@@ -15,9 +15,9 @@ class AudioSampleBase(BaseModel):
     approval_status: AudioSampleApprovalStatus = (
         AudioSampleApprovalStatus.PENDING
     )
-    sample_rate: int
-    bit_rate: int
-    duration: float
+    sample_rate: int | None
+    bit_rate: int | None
+    duration: float | None
 
 
 class AudioSampleCreate(AudioSampleBase):
@@ -27,9 +27,6 @@ class AudioSampleCreate(AudioSampleBase):
 class AudioSampleUpdate(AudioSampleBase):
     processing_status: AudioSampleProcessingStatus | None
     approval_status: AudioSampleApprovalStatus | None
-    sample_rate: int | None
-    bit_rate: int | None
-    duration: float | None
 
 
 class AudioSampleItem(AudioSampleBase):

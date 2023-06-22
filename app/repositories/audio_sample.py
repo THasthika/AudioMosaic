@@ -15,6 +15,27 @@ class AudioSampleRepository(BaseCRUDRepository):
     def __init__(self, db: Session) -> None:
         super().__init__(db)
 
+    def bulk_create(
+        self, create_audio_samples: list[ModelCreateType]
+    ) -> list[ModelType]:
+        with self.db.begin():
+            ret: list[AudioSampleRepository.ModelType] = []
+            for create_audio_sample in create_audio_samples:
+                audio_sample = self.get_model_from_create_type(
+                    create_audio_sample)
+                self.db.add(audio_sample)
+            ret.append(audio_sample)
+
+        for s in ret:
+            self.db.refresh(s)
+
+        return ret
+
+    def bulk_delete(self, models: list[ModelType]):
+        with self.db.begin():
+            for m in models:
+                self.db.delete(m)
+
     def get_model_from_create_type(
         self, create_type: ModelCreateType
     ) -> ModelType:

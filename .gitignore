@@ -3,3 +3,8 @@
 __pycache__
 *.pyc
 .vscode/
+
+storage
+storage/audio_samples
+
+!.gitkeep

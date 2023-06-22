@@ -12,13 +12,14 @@ from sqlalchemy.exc import IntegrityError
 class LabelService(BaseService):
     def create_labels(self, create_labels: list[LabelCreate]) -> ServiceResult:
         try:
-            created_labels = LabelRepository(self.db).bulk_create(create_labels)
+            created_labels = LabelRepository(
+                self.db).bulk_create(create_labels)
             created_labels = list(
                 map(lambda x: LabelItem.from_orm(x), created_labels)
             )
             return ServiceResult(created_labels)
         except AppExceptionCase as e:
-            return ServiceResult(e.context)
+            return ServiceResult(e)
         except IntegrityError:
             return ServiceResult(label_exceptions.LabelAlreadyExists())
         except Exception as e:
@@ -30,7 +31,7 @@ class LabelService(BaseService):
             created_label = LabelRepository(self.db).create(create_label)
             return ServiceResult(LabelItem.from_orm(created_label))
         except AppExceptionCase as e:
-            return ServiceResult(e.context)
+            return ServiceResult(e)
         except IntegrityError:
             return ServiceResult(label_exceptions.LabelAlreadyExists())
         except Exception as e:

@@ -24,7 +24,11 @@ class LabelRepository(BaseCRUDRepository):
                 label = self.get_model_from_create_type(create_label)
                 self.db.add(label)
             ret.append(label)
-            return ret
+
+        for label in ret:
+            self.db.refresh(label)
+
+        return ret
 
     def get_model_from_create_type(
         self, create_type: ModelCreateType

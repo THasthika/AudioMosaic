@@ -1,17 +1,24 @@
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, UploadFile, BackgroundTasks
 from uuid import UUID
 
 from app.config.database import get_db
-from app.schemas import LabelItem, LabelCreate, LabelUpdate
-from app.services.label import LabelService
+# from app.schemas import LabelItem, LabelCreate, LabelUpdate
+# from app.services.label import LabelService
 from app.utils.service_result import handle_result
+from app.services.audio_sample import AudioSampleService
 
 router = APIRouter()
 
 
 @router.post("/{dataset_id}", tags=["Audio Sample"])
-def upload_audio_sample():
-    pass
+async def upload_audio_samples(dataset_id: UUID, audio_samples: list[UploadFile], background_tasks: BackgroundTasks, db: get_db = Depends()):
+    result = await AudioSampleService(
+        db, background_tasks).batch_upload_audio_samples(dataset_id, audio_samples)
+
+    print(result)
+
+    return handle_result(result=result)
+
 
 # @router.get(
 #     "/{dataset_id}",
