@@ -13,7 +13,7 @@ router = APIRouter()
 
 
 @router.post(
-    "/{dataset_id}", status_code=status.HTTP_201_CREATED, tags=["Audio Sample"]
+    "/{dataset_id}", status_code=status.HTTP_201_CREATED, tags=["Audio Samples"]
 )
 async def upload_audio_samples(
     dataset_id: UUID,
@@ -28,7 +28,9 @@ async def upload_audio_samples(
 
 
 @router.get(
-    "/{dataset_id}", response_model=list[AudioSampleItem], tags=["Audio Sample"]
+    "/{dataset_id}",
+    response_model=list[AudioSampleItem],
+    tags=["Audio Samples"],
 )
 async def audio_samples(dataset_id: UUID, db: get_db = Depends()):
     result = AudioSampleService(db).list_audio_samples_by_dataset_id(dataset_id)
