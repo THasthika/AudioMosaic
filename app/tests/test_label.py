@@ -19,7 +19,7 @@ def test_create_label():
     assert create_response.status_code == 201
     dataset_id = create_response.json()["id"]
 
-    test_request_payload = [{"name": "Label A"}]
+    test_request_payload = [{"name": "Label A", "color": "#000"}]
 
     response = client.post(
         f"/api/v1/labels/{dataset_id}", content=json.dumps(test_request_payload)
@@ -31,7 +31,9 @@ def test_create_label():
 
 def test_list_labels():
     # Create a label
-    test_request_payload = [{"name": "Label B"}]
+    test_request_payload = [
+        {"name": "Label B", "color": "#f00", "description": "Hello"}
+    ]
     create_response = client.post(
         f"/api/v1/labels/{dataset_id}",
         content=json.dumps(test_request_payload),
@@ -49,7 +51,9 @@ def test_list_labels():
 
 def test_get_label():
     # Create a label
-    test_request_payload = [{"name": "Label C"}]
+    test_request_payload = [
+        {"name": "Label C", "color": "#f00", "description": "Hello"}
+    ]
     create_response = client.post(
         f"/api/v1/labels/{dataset_id}",
         content=json.dumps(test_request_payload),
@@ -64,7 +68,9 @@ def test_get_label():
 
 def test_update_label():
     # Create a label
-    test_request_payload = [{"name": "Label D"}]
+    test_request_payload = [
+        {"name": "Label D", "color": "#f00", "description": "Hello"}
+    ]
     create_response = client.post(
         f"/api/v1/labels/{dataset_id}",
         content=json.dumps(test_request_payload),
@@ -86,7 +92,9 @@ def test_update_label():
 
 def test_delete_label():
     # Create a label
-    test_request_payload = [{"name": "Label E"}]
+    test_request_payload = [
+        {"name": "Label E", "color": "#f00", "description": "Hello"}
+    ]
     create_response = client.post(
         f"/api/v1/labels/{dataset_id}",
         content=json.dumps(test_request_payload),

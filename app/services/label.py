@@ -10,6 +10,8 @@ from sqlalchemy.exc import IntegrityError
 
 
 class LabelService(BaseService):
+    # TODO: Add Color Validation
+
     def create_labels(self, create_labels: list[LabelCreate]) -> ServiceResult:
         try:
             created_labels = LabelRepository(
