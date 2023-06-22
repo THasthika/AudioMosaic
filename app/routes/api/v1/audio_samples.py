@@ -1,17 +1,20 @@
-from fastapi import APIRouter, Depends, UploadFile, BackgroundTasks
+from fastapi import APIRouter, Depends, UploadFile, BackgroundTasks, status
+from fastapi.responses import FileResponse
 from uuid import UUID
 
 from app.config.database import get_db
 
-# from app.schemas import LabelItem, LabelCreate, LabelUpdate
-# from app.services.label import LabelService
+from app.schemas.audio_sample import AudioSampleItem
 from app.utils.service_result import handle_result
 from app.services.audio_sample import AudioSampleService
+from app.models.audio_sample import AudioSampleApprovalStatus
 
 router = APIRouter()
 
 
-@router.post("/{dataset_id}", tags=["Audio Sample"])
+@router.post(
+    "/{dataset_id}", status_code=status.HTTP_201_CREATED, tags=["Audio Sample"]
+)
 async def upload_audio_samples(
     dataset_id: UUID,
     audio_samples: list[UploadFile],
@@ -24,66 +27,65 @@ async def upload_audio_samples(
     return handle_result(result)
 
 
-@router.get("/{dataset_id}", tags=["Audio Sample"])
+@router.get(
+    "/{dataset_id}", response_model=list[AudioSampleItem], tags=["Audio Sample"]
+)
 async def audio_samples(dataset_id: UUID, db: get_db = Depends()):
-    audio_samples = AudioSampleService(db).list_audio_samples_by_dataset_id(
-        dataset_id
+    result = AudioSampleService(db).list_audio_samples_by_dataset_id(dataset_id)
+    return handle_result(result)
+
+
+@router.get(
+    "/sample/{id}",
+    response_model=AudioSampleItem,
+    status_code=status.HTTP_200_OK,
+    tags=["Audio Samples"],
+)
+async def get_audio_sample_by_id(id: UUID, db: get_db = Depends()):
+    result = AudioSampleService(db).get_audio_sample(id)
+    return handle_result(result)
+
+
+@router.patch(
+    "/sample/{id}/accept",
+    response_model=AudioSampleItem,
+    tags=["Audio Samples"],
+)
+async def accept_audio_sample(id: UUID, db: get_db = Depends()):
+    result = AudioSampleService(db).update_approval_status(
+        id, AudioSampleApprovalStatus.ACCEPTED
     )
-    return handle_result(audio_samples)
+    return handle_result(result)
 
 
-# @router.get(
-#     "/{dataset_id}",
-#     response_model=list[LabelItem],
-#     status_code=status.HTTP_200_OK,
-#     tags=["Labels"],
-# )
-# async def list_labels(dataset_id: UUID, db: get_db = Depends()):
-#     labels = LabelService(db).list_labels_by_dataset_id(dataset_id)
-#     return handle_result(labels)
+@router.patch(
+    "/sample/{id}/reject",
+    response_model=AudioSampleItem,
+    tags=["Audio Samples"],
+)
+async def reject_audio_sample(id: UUID, db: get_db = Depends()):
+    result = AudioSampleService(db).update_approval_status(
+        id, AudioSampleApprovalStatus.REJECTED
+    )
+    return handle_result(result)
 
 
-# @router.post(
-#     "",
-#     response_model=LabelItem,
-#     status_code=status.HTTP_201_CREATED,
-#     tags=["Labels"],
-# )
-# async def create_label(label_create: LabelCreate, db: get_db = Depends()):
-#     label = LabelService(db).create_label(label_create)
-#     return handle_result(label)
+@router.delete(
+    "/sample/{id}",
+    response_model=AudioSampleItem,
+    status_code=status.HTTP_200_OK,
+    tags=["Audio Samples"],
+)
+async def delete_audio_sample(
+    id: UUID, background_tasks: BackgroundTasks, db: get_db = Depends()
+):
+    result = AudioSampleService(db).delete_audio_sample(id, background_tasks)
+    return handle_result(result)
 
 
-# @router.patch(
-#     "/label/{id}",
-#     response_model=LabelItem,
-#     status_code=status.HTTP_200_OK,
-#     tags=["Labels"],
-# )
-# async def update_label(
-#     id: UUID, label_update: LabelUpdate, db: get_db = Depends()
-# ):
-#     updated_label = LabelService(db).update_label(id, label_update)
-#     return handle_result(updated_label)
-
-
-# @router.delete(
-#     "/label/{id}",
-#     response_model=LabelItem,
-#     status_code=status.HTTP_200_OK,
-#     tags=["Labels"],
-# )
-# async def delete_label(id: UUID, db: get_db = Depends()):
-#     deleted_label = LabelService(db).delete_label(id)
-#     return handle_result(deleted_label)
-
-
-# @router.get(
-#     "/label/{id}",
-#     response_model=LabelItem,
-#     status_code=status.HTTP_200_OK,
-#     tags=["Labels"],
-# )
-# async def get_Label_by_id(id: UUID, db: get_db = Depends()):
-#     label = LabelService(db).get_label(id)
-#     return handle_result(label)
+@router.get("/sample/{id}/data", tags=["Audio Samples"])
+async def get_audio_sample_data(id: UUID, db: get_db = Depends()):
+    result = AudioSampleService(db).get_audio_sample_path(id)
+    if not result.success:
+        return handle_result(handle_result)
+    return FileResponse(result.value)

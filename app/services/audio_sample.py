@@ -3,41 +3,31 @@ from typing import Union
 
 from sqlalchemy.orm import Session
 from .base import BaseService
-from app.repositories import LabelRepository
 from uuid import UUID, uuid4
 from app.utils.service_result import ServiceResult
 from app.exceptions.base import AppExceptionCase
-import app.exceptions.label as label_exceptions
 from sqlalchemy.exc import IntegrityError
 
 import app.exceptions.audio_sample as audio_sample_exceptions
 
-from app.schemas.audio_sample import AudioSampleItem, AudioSampleCreate
+from app.schemas.audio_sample import (
+    AudioSampleItem,
+    AudioSampleCreate,
+    AudioSampleUpdate,
+)
 from app.repositories.audio_sample import AudioSampleRepository
-from app.models.audio_sample import AudioSample
+from app.models.audio_sample import AudioSample, AudioSampleApprovalStatus
 
-from app.tasks.audio_sample import process_queued_audio_sample
+from app.tasks.audio_sample import (
+    process_queued_audio_sample,
+    delete_audio_sample,
+)
 
 from app.config.app import STORAGE_AUDIO_SAMPLE_PATH, STORAGE_TYPE
 
 import os
 
 # from app.models.audio_sample import Label
-
-"""
-
-1. Audio Sample Upload Procedure
-    - User Uploads the mp3 / or other format file
-        - Store in the storage folder with a status QUEUED
-        - Notify the processing service that a new file has been uploaded
-        - Return the status to the client
-    - The processing service kicks in
-        - Looks for current jobs
-        - Open the file to read the metadata (sample rate, bit rate, duration)
-        - Store them in the database and mark the file READY
-
-
-"""
 
 
 class AudioSampleService(BaseService):
@@ -178,62 +168,59 @@ class AudioSampleService(BaseService):
             print(e)
             return ServiceResult(label_exceptions.AppExceptionCase(500, None))
 
-    # def create_label(self, create_label: LabelCreate) -> ServiceResult:
-    #     try:
-    #         created_label = LabelRepository(self.db).create(create_label)
-    #         return ServiceResult(LabelItem.from_orm(created_label))
-    #     except AppExceptionCase as e:
-    #         return ServiceResult(e)
-    #     except IntegrityError:
-    #         return ServiceResult(label_exceptions.LabelAlreadyExists())
-    #     except Exception as e:
-    #         print(e)
-    #         return ServiceResult(label_exceptions.LabelCreateFailed())
+    def get_audio_sample(self, sample_id: UUID) -> ServiceResult:
+        try:
+            audio_sample = AudioSampleRepository(self.db).get_by_id(sample_id)
+            return ServiceResult(AudioSampleItem.from_orm(audio_sample))
+        except AppExceptionCase as e:
+            return ServiceResult(e)
+        except Exception as e:
+            print(e)
+            return ServiceResult(audio_sample_exceptions.AudioSampleNotFound())
 
-    # def list_labels_by_dataset_id(self, dataset_id: UUID) -> ServiceResult:
-    #     try:
-    #         labels = (
-    #             self.db.query(Label)
-    #             .filter(Label.dataset_id == dataset_id)
-    #             .all()
-    #         )
-    #         labels = list(map(lambda x: LabelItem.from_orm(x), labels))
-    #         return ServiceResult(labels)
-    #     except Exception as e:
-    #         print(e)
-    #         # TODO: Make the exception more refined
-    #         return ServiceResult(label_exceptions.AppExceptionCase(500, None))
+    def update_approval_status(
+        self, sample_id: UUID, new_status: AudioSampleApprovalStatus
+    ) -> ServiceResult:
+        try:
+            update_model = AudioSampleUpdate(approval_status=new_status)
+            audio_sample = AudioSampleRepository(self.db).update(
+                sample_id, update_model
+            )
+            return ServiceResult(AudioSampleItem.from_orm(audio_sample))
+        except AppExceptionCase as e:
+            return ServiceResult(e)
+        except Exception:
+            return ServiceResult(
+                audio_sample_exceptions.AudioSampleApprovalStatusUpdateFailed()
+            )
 
-    # def update_label(
-    #     self, id: UUID, update_label: LabelUpdate
-    # ) -> ServiceResult:
-    #     try:
-    #         updated_label = LabelRepository(self.db).update(id, update_label)
-    #         return ServiceResult(LabelItem.from_orm(updated_label))
-    #     except AppExceptionCase as e:
-    #         return ServiceResult(e)
-    #     except IntegrityError:
-    #         return ServiceResult(label_exceptions.LabelAlreadyExists())
-    #     except Exception as e:
-    #         print(e)
-    #         return ServiceResult(label_exceptions.LabelUpdateFailed())
+    def delete_audio_sample(
+        self,
+        sample_id: UUID,
+        background_tasks: BackgroundTasks,
+    ) -> ServiceResult:
+        try:
+            deleted_audio_sample = AudioSampleRepository(self.db).delete(
+                sample_id
+            )
+            background_tasks.add_task(
+                delete_audio_sample, deleted_audio_sample.path
+            )
+            return ServiceResult(AudioSampleItem.from_orm(deleted_audio_sample))
+        except AppExceptionCase as e:
+            return ServiceResult(e)
+        except Exception as e:
+            print(e)
+            return ServiceResult(
+                audio_sample_exceptions.AudioSampleDeleteFailed()
+            )
 
-    # def delete_label(self, id: UUID) -> ServiceResult:
-    #     try:
-    #         deleted_label = LabelRepository(self.db).delete(id)
-    #         return ServiceResult(LabelItem.from_orm(deleted_label))
-    #     except AppExceptionCase as e:
-    #         return ServiceResult(e)
-    #     except Exception as e:
-    #         print(e)
-    #         return ServiceResult(label_exceptions.LabelDeleteFailed())
-
-    # def get_label(self, id: UUID) -> ServiceResult:
-    #     try:
-    #         label = LabelRepository(self.db).get_by_id(id)
-    #         return ServiceResult(LabelItem.from_orm(label))
-    #     except AppExceptionCase as e:
-    #         return ServiceResult(e)
-    #     except Exception as e:
-    #         print(e)
-    #         return ServiceResult(label_exceptions.LabelNotFound())
+    def get_audio_sample_path(self, sample_id: UUID) -> ServiceResult:
+        try:
+            audio_sample = AudioSampleRepository(self.db).get_by_id(sample_id)
+            return ServiceResult(audio_sample.path)
+        except AppExceptionCase as e:
+            return ServiceResult(e)
+        except Exception as e:
+            print(e)
+            return ServiceResult(audio_sample_exceptions.AudioSampleNotFound())

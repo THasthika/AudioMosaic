@@ -67,6 +67,6 @@ async def delete_label(id: UUID, db: get_db = Depends()):
     status_code=status.HTTP_200_OK,
     tags=["Labels"],
 )
-async def get_Label_by_id(id: UUID, db: get_db = Depends()):
+async def get_label_by_id(id: UUID, db: get_db = Depends()):
     label = LabelService(db).get_label(id)
     return handle_result(label)

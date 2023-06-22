@@ -10,7 +10,25 @@ class AudioSampleIncorrectContentType(AppExceptionCase):
 
 class AudioSampleCreateFailed(AppExceptionCase):
     def __init__(self, context: dict = None):
-        status_code = 500
+        status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+        super().__init__(status_code, context)
+
+
+class AudioSampleNotFound(AppExceptionCase):
+    def __init__(self, context: dict = None):
+        status_code = status.HTTP_404_NOT_FOUND
+        super().__init__(status_code, context)
+
+
+class AudioSampleApprovalStatusUpdateFailed(AppExceptionCase):
+    def __init__(self, context: dict = None):
+        status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+        super().__init__(status_code, context)
+
+
+class AudioSampleDeleteFailed(AppExceptionCase):
+    def __init__(self, context: dict = None):
+        status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
         super().__init__(status_code, context)
 
 

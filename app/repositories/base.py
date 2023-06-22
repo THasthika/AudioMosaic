@@ -67,7 +67,7 @@ class BaseCRUDRepository(BaseRepository):
     def delete(self, id: UUID):
         item = self.get_by_id(id)
         if item is None:
-            return self.ItemNotFoundException()
+            raise self.ItemNotFoundException()
         self.db.delete(item)
         self.db.commit()
         return item

@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from .base import BaseCRUDRepository
-from app.exceptions.label import LabelNotFound
+from app.exceptions.audio_sample import AudioSampleNotFound
 from app.models.audio_sample import AudioSample
 from app.schemas.audio_sample import AudioSampleCreate, AudioSampleUpdate
 
@@ -10,7 +10,7 @@ class AudioSampleRepository(BaseCRUDRepository):
     ModelCreateType = AudioSampleCreate
     ModelUpdateType = AudioSampleUpdate
 
-    ItemNotFoundException = LabelNotFound
+    ItemNotFoundException = AudioSampleNotFound
 
     def __init__(self, db: Session) -> None:
         super().__init__(db)
@@ -49,9 +49,6 @@ class AudioSampleRepository(BaseCRUDRepository):
             parent_id=create_type.parent_id,
             processing_status=create_type.processing_status,
             approval_status=create_type.approval_status,
-            sample_rate=create_type.sample_rate,
-            bit_rate=create_type.bit_rate,
-            duration=create_type.duration,
             dataset_id=create_type.dataset_id,
         )
 

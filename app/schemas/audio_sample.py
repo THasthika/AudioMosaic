@@ -8,15 +8,12 @@ from app.models.audio_sample import (
 
 class AudioSampleBase(BaseModel):
     parent_id: UUID | None
-    processing_status: AudioSampleProcessingStatus = (
-        AudioSampleProcessingStatus.QUEUED
-    )
     approval_status: AudioSampleApprovalStatus = (
         AudioSampleApprovalStatus.PENDING
     )
-    sample_rate: int | None
-    bit_rate: int | None
-    duration: float | None
+    processing_status: AudioSampleProcessingStatus = (
+        AudioSampleProcessingStatus.QUEUED
+    )
 
 
 class AudioSampleCreate(AudioSampleBase):
@@ -25,13 +22,21 @@ class AudioSampleCreate(AudioSampleBase):
 
 
 class AudioSampleUpdate(AudioSampleBase):
-    processing_status: AudioSampleProcessingStatus | None
     approval_status: AudioSampleApprovalStatus | None
+    processing_status: AudioSampleProcessingStatus | None
+    sample_rate: int | None
+    bit_rate: int | None
+    duration: float | None
 
 
 class AudioSampleItem(AudioSampleBase):
     id: UUID
     dataset_id: UUID
+    processing_status: AudioSampleProcessingStatus
+    approval_status: AudioSampleApprovalStatus
+    sample_rate: int | None
+    bit_rate: int | None
+    duration: float | None
 
     class Config:
         orm_mode = True

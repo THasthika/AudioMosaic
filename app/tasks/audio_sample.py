@@ -9,6 +9,8 @@ from app.repositories.audio_sample import AudioSampleRepository
 from app.schemas.audio_sample import AudioSampleUpdate
 from app.models.audio_sample import AudioSampleProcessingStatus
 
+import os
+
 
 async def process_queued_audio_sample(db: Session, audio_sample_id: UUID):
     logging.debug(f"PROCESSING Audio Sample: {audio_sample_id}")
@@ -53,6 +55,13 @@ async def process_queued_audio_sample(db: Session, audio_sample_id: UUID):
     except Exception as e:
         print(e)
         logging.error(f"Error on updating audio sample id: {audio_sample_id}")
+
+
+async def delete_audio_sample(audio_sample_path: str):
+    try:
+        os.unlink(audio_sample_path)
+    except Exception:
+        logging.error(f"Error while deleting path: {audio_sample_path}")
 
 
 def delete_unrelated_audio_samples(db: Session):
