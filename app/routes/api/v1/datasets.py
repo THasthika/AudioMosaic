@@ -32,7 +32,9 @@ async def list_datasets(
     status_code=status.HTTP_201_CREATED,
     tags=["Datasets"],
 )
-async def create_dataset(dataset_create: DatasetCreate, db: get_db = Depends()):
+async def create_dataset(
+    dataset_create: DatasetCreate, db: get_db = Depends()
+):
     dataset = DatasetService(db).create_dataset(dataset_create)
     return handle_result(dataset)
 

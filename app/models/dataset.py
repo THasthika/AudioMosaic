@@ -4,6 +4,8 @@ from app.config.database import Base
 from sqlalchemy import Column, String, DateTime
 from app.utils.guid import GUID
 
+# from sqlalchemy.orm import relationship
+
 
 class Dataset(Base):
     __tablename__ = "datasets"
@@ -17,3 +19,5 @@ class Dataset(Base):
         default=datetime.utcnow,
         onupdate=datetime.utcnow,
     )
+
+    # labels = relationship("Label")

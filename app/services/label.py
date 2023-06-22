@@ -14,15 +14,23 @@ class LabelService(BaseService):
 
     def create_labels(self, create_labels: list[LabelCreate]) -> ServiceResult:
         try:
-            created_labels = LabelRepository(self.db).bulk_create(create_labels)
+            created_labels = LabelRepository(self.db).bulk_create(
+                create_labels
+            )
             created_labels = list(
                 map(lambda x: LabelItem.from_orm(x), created_labels)
             )
             return ServiceResult(created_labels)
         except AppExceptionCase as e:
-            return ServiceResult(e.context)
-        except IntegrityError:
-            return ServiceResult(label_exceptions.LabelAlreadyExists())
+            return ServiceResult(e)
+        except IntegrityError as e:
+            error_str = f"{e}"
+            error_str = error_str.splitlines()[0]
+            return ServiceResult(
+                label_exceptions.LabelCreateFailed(
+                    {"reason": "Database insert failed!", "context": error_str}
+                )
+            )
         except Exception as e:
             print(e)
             return ServiceResult(label_exceptions.LabelCreateFailed())
@@ -32,9 +40,13 @@ class LabelService(BaseService):
             created_label = LabelRepository(self.db).create(create_label)
             return ServiceResult(LabelItem.from_orm(created_label))
         except AppExceptionCase as e:
-            return ServiceResult(e.context)
-        except IntegrityError:
-            return ServiceResult(label_exceptions.LabelAlreadyExists())
+            return ServiceResult(e)
+        except IntegrityError as e:
+            error_str = f"{e}"
+            error_str = error_str.splitlines()[0]
+            return ServiceResult(
+                label_exceptions.LabelCreateFailed({"reason": error_str})
+            )
         except Exception as e:
             print(e)
             return ServiceResult(label_exceptions.LabelCreateFailed())

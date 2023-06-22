@@ -8,3 +8,6 @@ rm -f $DB_PATH
 
 DATABASE_URL=$DATABASE_URL poetry run alembic upgrade head
 APP_DIST_PATH=$APP_DIST_PATH DATABASE_URL=$DATABASE_URL poetry run pytest
+
+# clear storage created
+rm -r storage/audio_samples/*

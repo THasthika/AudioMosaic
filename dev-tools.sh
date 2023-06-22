@@ -21,6 +21,10 @@ _run() {
     DATABASE_URL=$DATABASE_URL poetry run uvicorn app.main:app --reload
 }
 
+_clear_storage() {
+    rm -r storage/audio_samples/*
+}
+
 # Check if the argument count is less than 1
 if [ $# -lt 1 ]; then
     echo "Usage: $0 <command>"
@@ -41,6 +45,9 @@ case "$command" in
         ;;
     run)
         _run
+        ;;
+    clear_storage)
+        _clear_storage
         ;;
     # # Add more commands here
     # other_command)

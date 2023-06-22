@@ -21,6 +21,7 @@ class LabelUpdate(LabelBase):
 
 class LabelItem(LabelBase):
     id: UUID
+    dataset_id: UUID
 
     class Config:
         orm_mode = True
