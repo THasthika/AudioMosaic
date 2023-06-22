@@ -206,7 +206,9 @@ class AudioSampleService(BaseService):
             background_tasks.add_task(
                 delete_audio_sample, deleted_audio_sample.path
             )
-            return ServiceResult(AudioSampleItem.from_orm(deleted_audio_sample))
+            return ServiceResult(
+                AudioSampleItem.from_orm(deleted_audio_sample)
+            )
         except AppExceptionCase as e:
             return ServiceResult(e)
         except Exception as e:

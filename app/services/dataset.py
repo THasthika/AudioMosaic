@@ -33,7 +33,9 @@ class DatasetService(BaseService):
         except Exception as e:
             print(e)
             # TODO: Make the exception more refined
-            return ServiceResult(dataset_exceptions.AppExceptionCase(500, None))
+            return ServiceResult(
+                dataset_exceptions.AppExceptionCase(500, None)
+            )
 
     def update_dataset(
         self, id: UUID, update_dataset: DatasetUpdate

@@ -22,7 +22,8 @@ def test_create_label():
     test_request_payload = [{"name": "Label A", "color": "#000"}]
 
     response = client.post(
-        f"/api/v1/labels/{dataset_id}", content=json.dumps(test_request_payload)
+        f"/api/v1/labels/{dataset_id}",
+        content=json.dumps(test_request_payload),
     )
 
     assert response.status_code == 201

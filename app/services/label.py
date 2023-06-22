@@ -14,7 +14,9 @@ class LabelService(BaseService):
 
     def create_labels(self, create_labels: list[LabelCreate]) -> ServiceResult:
         try:
-            created_labels = LabelRepository(self.db).bulk_create(create_labels)
+            created_labels = LabelRepository(self.db).bulk_create(
+                create_labels
+            )
             created_labels = list(
                 map(lambda x: LabelItem.from_orm(x), created_labels)
             )
