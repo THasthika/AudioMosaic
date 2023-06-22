@@ -36,6 +36,10 @@ class AudioSampleRepository(BaseCRUDRepository):
             for m in models:
                 self.db.delete(m)
 
+    def set_model_parent_null(self, model: ModelType):
+        model.parent_id = None
+        return model
+
     def get_model_from_create_type(
         self, create_type: ModelCreateType
     ) -> ModelType:
@@ -53,8 +57,6 @@ class AudioSampleRepository(BaseCRUDRepository):
     def get_model_from_update_type(
         self, current_model: ModelType, update_model: ModelUpdateType
     ) -> ModelType:
-        if update_model.path is not None:
-            current_model.path = update_model.path
         if update_model.parent_id is not None:
             current_model.parent_id = update_model.parent_id
         if update_model.processing_status is not None:
@@ -65,5 +67,7 @@ class AudioSampleRepository(BaseCRUDRepository):
             current_model.sample_rate = update_model.sample_rate
         if update_model.bit_rate is not None:
             current_model.bit_rate = update_model.bit_rate
+        if update_model.duration is not None:
+            current_model.duration = update_model.duration
 
         return current_model

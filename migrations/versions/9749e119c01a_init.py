@@ -1,17 +1,16 @@
 """init
 
-Revision ID: fb7fac10f297
+Revision ID: 9749e119c01a
 Revises: 
-Create Date: 2023-06-21 17:44:56.370332
+Create Date: 2023-06-22 14:08:07.009514
 
 """
 from alembic import op
 import sqlalchemy as sa
 import app.utils.guid
 
-
 # revision identifiers, used by Alembic.
-revision = 'fb7fac10f297'
+revision = '9749e119c01a'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -40,8 +39,7 @@ def upgrade() -> None:
                                                          'REJECTED', name='audiosampleapprovalstatus'), nullable=True),
                     sa.Column('sample_rate', sa.Integer(), nullable=True),
                     sa.Column('bit_rate', sa.Integer(), nullable=True),
-                    sa.Column('duration', sa.Float(precision=10,
-                                                   decimal_return_scale=2), nullable=True),
+                    sa.Column('duration', sa.Float(), nullable=True),
                     sa.Column('created_at', sa.DateTime(), nullable=False),
                     sa.Column('updated_at', sa.DateTime(), nullable=False),
                     sa.ForeignKeyConstraint(['dataset_id'], ['datasets.id'], ),

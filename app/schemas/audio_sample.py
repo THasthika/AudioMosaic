@@ -7,7 +7,6 @@ from app.models.audio_sample import (
 
 
 class AudioSampleBase(BaseModel):
-    path: str | None
     parent_id: UUID | None
     processing_status: AudioSampleProcessingStatus = (
         AudioSampleProcessingStatus.QUEUED
@@ -21,6 +20,7 @@ class AudioSampleBase(BaseModel):
 
 
 class AudioSampleCreate(AudioSampleBase):
+    path: str | None
     dataset_id: UUID
 
 

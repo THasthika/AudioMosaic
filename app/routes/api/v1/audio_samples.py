@@ -12,12 +12,15 @@ router = APIRouter()
 
 @router.post("/{dataset_id}", tags=["Audio Sample"])
 async def upload_audio_samples(dataset_id: UUID, audio_samples: list[UploadFile], background_tasks: BackgroundTasks, db: get_db = Depends()):
-    result = await AudioSampleService(
-        db, background_tasks).batch_upload_audio_samples(dataset_id, audio_samples)
+    result = await AudioSampleService(db).batch_upload_audio_samples(dataset_id, audio_samples, background_tasks)
+    return handle_result(result)
 
-    print(result)
 
-    return handle_result(result=result)
+@router.get("/{dataset_id}", tags=["Audio Sample"])
+async def audio_samples(dataset_id: UUID, db: get_db = Depends()):
+    audio_samples = AudioSampleService(
+        db).list_audio_samples_by_dataset_id(dataset_id)
+    return handle_result(audio_samples)
 
 
 # @router.get(

@@ -16,17 +16,17 @@ from sqlalchemy.orm import relationship
 import enum
 
 
-class AudioSampleProcessingStatus(enum.Enum):
-    QUEUED = 1
-    PROCESSING = 2
-    READY = 3
-    ERROR = 4
+class AudioSampleProcessingStatus(enum.StrEnum):
+    QUEUED = "QUEUED"
+    PROCESSING = "PROCESSING"
+    READY = "READY"
+    ERROR = "ERROR"
 
 
-class AudioSampleApprovalStatus(enum.Enum):
-    PENDING = 1
-    ACCEPTED = 2
-    REJECTED = 3
+class AudioSampleApprovalStatus(enum.StrEnum):
+    PENDING = "PENDING"
+    ACCEPTED = "ACCEPTED"
+    REJECTED = "REJECTED"
 
 
 class AudioSample(Base):
@@ -48,8 +48,7 @@ class AudioSample(Base):
 
     sample_rate = Column(Integer, nullable=True)
     bit_rate = Column(Integer, nullable=True)
-    duration = Column(
-        Float(precision=10, decimal_return_scale=2), nullable=True)
+    duration = Column(Float(), nullable=True)
 
     created_at = Column(DateTime, nullable=False, default=datetime.utcnow)
     updated_at = Column(

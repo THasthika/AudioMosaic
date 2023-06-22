@@ -20,8 +20,10 @@ class LabelService(BaseService):
             return ServiceResult(created_labels)
         except AppExceptionCase as e:
             return ServiceResult(e)
-        except IntegrityError:
-            return ServiceResult(label_exceptions.LabelAlreadyExists())
+        except IntegrityError as e:
+            error_str = f"{e}"
+            error_str = error_str.splitlines()[0]
+            return ServiceResult(label_exceptions.LabelCreateFailed({"reason": "Database insert failed!", "context": error_str}))
         except Exception as e:
             print(e)
             return ServiceResult(label_exceptions.LabelCreateFailed())
@@ -32,8 +34,10 @@ class LabelService(BaseService):
             return ServiceResult(LabelItem.from_orm(created_label))
         except AppExceptionCase as e:
             return ServiceResult(e)
-        except IntegrityError:
-            return ServiceResult(label_exceptions.LabelAlreadyExists())
+        except IntegrityError as e:
+            error_str = f"{e}"
+            error_str = error_str.splitlines()[0]
+            return ServiceResult(label_exceptions.LabelCreateFailed({"reason": error_str}))
         except Exception as e:
             print(e)
             return ServiceResult(label_exceptions.LabelCreateFailed())
