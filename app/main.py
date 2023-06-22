@@ -22,8 +22,10 @@ from app.exceptions.base import app_exception_handler
 import logging
 
 # TODO: make it better later
-logging.basicConfig(level=logging.DEBUG,
-                    format='%(relativeCreated)6d %(threadName)s %(message)s')
+logging.basicConfig(
+    level=logging.DEBUG,
+    format="%(relativeCreated)6d %(threadName)s %(message)s",
+)
 
 app = FastAPI(
     root_path=ROOT_PATH,

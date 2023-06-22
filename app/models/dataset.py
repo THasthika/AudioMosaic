@@ -3,6 +3,7 @@ from datetime import datetime
 from app.config.database import Base
 from sqlalchemy import Column, String, DateTime
 from app.utils.guid import GUID
+
 # from sqlalchemy.orm import relationship
 
 

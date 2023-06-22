@@ -22,7 +22,8 @@ class AudioSampleRepository(BaseCRUDRepository):
             ret: list[AudioSampleRepository.ModelType] = []
             for create_audio_sample in create_audio_samples:
                 audio_sample = self.get_model_from_create_type(
-                    create_audio_sample)
+                    create_audio_sample
+                )
                 self.db.add(audio_sample)
             ret.append(audio_sample)
 

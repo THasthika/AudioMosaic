@@ -41,8 +41,12 @@ async def process_queued_audio_sample(db: Session, audio_sample_id: UUID):
     except Exception:
         logging.error(f"Error on extracting metadata id: {audio_sample_id}")
 
-    update_model = AudioSampleUpdate(bit_rate=bitrate, duration=duration,
-                                     sample_rate=sample_rate, processing_status=AudioSampleProcessingStatus.READY)
+    update_model = AudioSampleUpdate(
+        bit_rate=bitrate,
+        duration=duration,
+        sample_rate=sample_rate,
+        processing_status=AudioSampleProcessingStatus.READY,
+    )
 
     try:
         audio_sample_repo.update(audio_sample_id, update_model)

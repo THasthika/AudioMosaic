@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, UploadFile, BackgroundTasks
 from uuid import UUID
 
 from app.config.database import get_db
+
 # from app.schemas import LabelItem, LabelCreate, LabelUpdate
 # from app.services.label import LabelService
 from app.utils.service_result import handle_result
@@ -11,15 +12,23 @@ router = APIRouter()
 
 
 @router.post("/{dataset_id}", tags=["Audio Sample"])
-async def upload_audio_samples(dataset_id: UUID, audio_samples: list[UploadFile], background_tasks: BackgroundTasks, db: get_db = Depends()):
-    result = await AudioSampleService(db).batch_upload_audio_samples(dataset_id, audio_samples, background_tasks)
+async def upload_audio_samples(
+    dataset_id: UUID,
+    audio_samples: list[UploadFile],
+    background_tasks: BackgroundTasks,
+    db: get_db = Depends(),
+):
+    result = await AudioSampleService(db).batch_upload_audio_samples(
+        dataset_id, audio_samples, background_tasks
+    )
     return handle_result(result)
 
 
 @router.get("/{dataset_id}", tags=["Audio Sample"])
 async def audio_samples(dataset_id: UUID, db: get_db = Depends()):
-    audio_samples = AudioSampleService(
-        db).list_audio_samples_by_dataset_id(dataset_id)
+    audio_samples = AudioSampleService(db).list_audio_samples_by_dataset_id(
+        dataset_id
+    )
     return handle_result(audio_samples)
 
 

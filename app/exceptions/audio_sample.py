@@ -13,6 +13,7 @@ class AudioSampleCreateFailed(AppExceptionCase):
         status_code = 500
         super().__init__(status_code, context)
 
+
 # class LabelCreateFailed(AppExceptionCase):
 #     def __init__(self, context: dict = None):
 #         """
