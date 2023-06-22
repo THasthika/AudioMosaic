@@ -1,5 +1,6 @@
-import CreateDataSet from '@/components/CreateDataSet'
-import bellIcon from '@/assets/icons/bell-icon.svg'
+import bellIcon from '@/assets/icons/bell-icon.svg';
+import RoutesList from '@/routes';
+import { Link } from 'react-router-dom';
 
 const Layout = () => {
   return (
@@ -9,7 +10,9 @@ const Layout = () => {
           <img src="/favicon.png" width="55px" alt="" />
           <span className="normal-case text-xl ml-4">AudioMosaic</span>
         </div>
-        <div className="navbar-end">
+        <div className="navbar-end gap-8">
+          <Link to="/">Create a Dataset</Link>
+          <Link to="/view">View Datasets</Link>
           <button className="btn btn-circle">
             <div className="indicator">
               <img className="w-6" src={bellIcon} alt="bell icon" />
@@ -19,7 +22,7 @@ const Layout = () => {
         </div>
       </div>
       <main className="flex-grow">
-        <CreateDataSet />
+        <RoutesList />
       </main>
       <footer className="footer footer-center p-4 bg-base-300 text-base-content">
         <div>
