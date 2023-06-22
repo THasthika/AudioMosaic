@@ -88,11 +88,11 @@ const CreateDataSet = () => {
                             <input type="text" placeholder="Description" className="input input-bordered" value={label.description} onChange={(e) => onChangeDataSetLable(e, index)} name="description" />
                             <span><input type="color" value={label.color} onChange={(e) => onChangeDataSetLable(e, index)} name="color" /></span>
                         </label>
-                        <button className="btn btn-sm btn-circle btn-outline">
-                            <img className="w-4" src={plusIcon} alt="plus icon" onClick={handleAddNewLable} />
+                        <button className="btn btn-sm btn-circle btn-outline" onClick={handleAddNewLable}>
+                            <img className="w-4" src={plusIcon} alt="plus icon" />
                         </button>
-                        <button className="btn btn-sm btn-circle btn-outline">
-                            <img className="w-4" src={trashIcon} alt="trash icon" onClick={() => handleDeleteLable(index)} />
+                        <button className="btn btn-sm btn-circle btn-outline" onClick={() => handleDeleteLable(index)}>
+                            <img className="w-4" src={trashIcon} alt="trash icon" />
                         </button>
 
                     </div>
