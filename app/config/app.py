@@ -2,6 +2,8 @@ import os
 
 from starlette.datastructures import CommaSeparatedStrings
 
+DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///.data.db")
+
 PROJECT_NAME = os.getenv("PROJECT_NAME", "Audio Dataset Manager")
 LOG_LEVEL = os.getenv("LOG_LEVEL")
 DEBUG = os.getenv("LOG_LEVEL", "").strip().lower() == "debug"

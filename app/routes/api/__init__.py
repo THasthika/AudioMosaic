@@ -23,6 +23,9 @@ router.include_router(api.router, prefix=f"/{API_VERSION}")
     tags=["Healthcheck"],
 )
 async def db_version(session: Session = Depends(get_db)):
-    version = session.execute(text("select sqlite_version()")).first()[0]
+    version = session.execute(text("select sqlite_version()")).first()
+    ret = "None"
+    if version is not None:
+        ret = version[0]
 
-    return {"version": version}
+    return {"version": ret}
