@@ -14,12 +14,8 @@ class AudioSampleLabel(Base):
     label_id = Column(GUID(), ForeignKey(Label.id))
     audio_sample_id = Column(GUID(), ForeignKey(AudioSample.id))
     is_sample_level = Column(Boolean, default=True)
-    start_time = Column(
-        Float(), nullable=True
-    )
-    end_time = Column(
-        Float(), nullable=True
-    )
+    start_time = Column(Float(), nullable=True)
+    end_time = Column(Float(), nullable=True)
 
     label = relationship("Label", foreign_keys="AudioSampleLabel.label_id")
     audio_sample = relationship(

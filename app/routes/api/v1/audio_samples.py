@@ -1,9 +1,19 @@
-from fastapi import APIRouter, Depends, UploadFile, BackgroundTasks, status
+from fastapi import (
+    APIRouter,
+    Depends,
+    UploadFile,
+    BackgroundTasks,
+    status,
+    Query,
+)
 from fastapi.responses import FileResponse
 from uuid import UUID
 
+from typing import Annotated
+
 from app.config.database import get_db
 
+from app.schemas.generics import PaginatedResponse
 from app.schemas.audio_sample import AudioSampleItem
 from app.utils.service_result import handle_result
 from app.services.audio_sample import AudioSampleService
@@ -31,12 +41,17 @@ async def upload_audio_samples(
 
 @router.get(
     "/{dataset_id}",
-    response_model=list[AudioSampleItem],
+    response_model=PaginatedResponse[AudioSampleItem],
     tags=["Audio Samples"],
 )
-async def audio_samples(dataset_id: UUID, db: get_db = Depends()):
+async def audio_samples(
+    dataset_id: UUID,
+    limit: Annotated[int, Query(ge=1, le=100)] = 10,
+    page: Annotated[int, Query(ge=1)] = 1,
+    db: get_db = Depends(),
+):
     result = AudioSampleService(db).list_audio_samples_by_dataset_id(
-        dataset_id
+        dataset_id, limit, page
     )
     return handle_result(result)
 
