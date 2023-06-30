@@ -1,11 +1,10 @@
-import os
 from sqlalchemy import create_engine, event
 from sqlalchemy.engine import Engine
 from sqlalchemy.orm import sessionmaker, declarative_base
 
 from sqlite3 import Connection as SQLite3Connection
 
-DATABASE_URL = os.getenv("DATABASE_URL")
+from .app import DATABASE_URL
 
 engine = create_engine(
     DATABASE_URL,

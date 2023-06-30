@@ -13,6 +13,10 @@ class AudioSampleLabelCreate(AudioSampleLabelBase):
     audio_sample_id: UUID
 
 
+class AudioSampleLabelCreateRequest(AudioSampleLabelBase):
+    label_id: UUID
+
+
 class AudioSampleLabelUpdate(AudioSampleLabelBase):
     is_sample_level: bool | None
     start_time: float | None

@@ -1,3 +1,4 @@
+from uuid import UUID
 from sqlalchemy.orm import Session
 from .base import BaseCRUDRepository
 from app.exceptions.label import LabelNotFound
@@ -38,5 +39,17 @@ class AudioSampleLabelRepository(BaseCRUDRepository):
             current_model.start_time = update_model.start_time
         if update_model.end_time is not None:
             current_model.end_time = update_model.end_time
+        if update_model.is_sample_level:
+            current_model.start_time = None
+            current_model.end_time = None
 
         return current_model
+
+    def get_by_audio_sample_id(self, audio_sample_id: UUID) -> list[ModelType]:
+        audio_sample_labels = (
+            self.db.query(AudioSampleLabel)
+            .filter(AudioSampleLabel.audio_sample_id == audio_sample_id)
+            .all()
+        )
+
+        return audio_sample_labels

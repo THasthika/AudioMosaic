@@ -1,12 +1,10 @@
 from fastapi import BackgroundTasks, UploadFile
-from typing import Union
-
-from sqlalchemy.orm import Session
 from .base import BaseService
 from uuid import UUID, uuid4
 from app.utils.service_result import ServiceResult
 from app.exceptions.base import AppExceptionCase
 from sqlalchemy.exc import IntegrityError
+from app.schemas.generics import PaginatedResponse
 
 import app.exceptions.audio_sample as audio_sample_exceptions
 
@@ -23,7 +21,7 @@ from app.tasks.audio_sample import (
     delete_audio_sample,
 )
 
-from app.config.app import STORAGE_AUDIO_SAMPLE_PATH, STORAGE_TYPE
+from app.config.app import STORAGE_AUDIO_SAMPLE_PATH
 
 import os
 
@@ -152,21 +150,36 @@ class AudioSampleService(BaseService):
             )
 
     def list_audio_samples_by_dataset_id(
-        self, dataset_id: UUID
+        self, dataset_id: UUID, limit: int, page: int
     ) -> ServiceResult:
+        offset = (page - 1) * limit
         try:
+            total_count = (
+                self.db.query(AudioSample)
+                .filter(AudioSample.dataset_id == dataset_id)
+                .count()
+            )
             audio_samples = (
                 self.db.query(AudioSample)
                 .filter(AudioSample.dataset_id == dataset_id)
+                .limit(limit)
+                .offset(offset)
                 .all()
             )
             audio_samples = list(
                 map(lambda x: AudioSampleItem.from_orm(x), audio_samples)
             )
-            return ServiceResult(audio_samples)
+            sample_count = len(audio_samples)
+            return ServiceResult(
+                PaginatedResponse(
+                    count=sample_count, total=total_count, items=audio_samples
+                )
+            )
         except Exception as e:
             print(e)
-            return ServiceResult(label_exceptions.AppExceptionCase(500, None))
+            return ServiceResult(
+                audio_sample_exceptions.AppExceptionCase(500, None)
+            )
 
     def get_audio_sample(self, sample_id: UUID) -> ServiceResult:
         try:
