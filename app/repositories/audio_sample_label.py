@@ -46,8 +46,10 @@ class AudioSampleLabelRepository(BaseCRUDRepository):
         return current_model
 
     def get_by_audio_sample_id(self, audio_sample_id: UUID) -> list[ModelType]:
-
-        audio_sample_labels = self.db.query(AudioSampleLabel).filter(
-            AudioSampleLabel.audio_sample_id == audio_sample_id).all()
+        audio_sample_labels = (
+            self.db.query(AudioSampleLabel)
+            .filter(AudioSampleLabel.audio_sample_id == audio_sample_id)
+            .all()
+        )
 
         return audio_sample_labels

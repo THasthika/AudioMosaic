@@ -1,7 +1,5 @@
 from fastapi import BackgroundTasks, UploadFile
-from typing import Union
 
-from sqlalchemy.orm import Session
 from .base import BaseService
 from uuid import UUID, uuid4
 from app.utils.service_result import ServiceResult
@@ -24,7 +22,7 @@ from app.tasks.audio_sample import (
     delete_audio_sample,
 )
 
-from app.config.app import STORAGE_AUDIO_SAMPLE_PATH, STORAGE_TYPE
+from app.config.app import STORAGE_AUDIO_SAMPLE_PATH
 
 import os
 

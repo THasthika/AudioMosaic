@@ -5,7 +5,7 @@ from fastapi import (
     BackgroundTasks,
     status,
     Query,
-    HTTPException
+    HTTPException,
 )
 from fastapi.responses import FileResponse
 from uuid import UUID
@@ -17,7 +17,11 @@ from app.config.database import get_db
 
 from app.schemas.generics import PaginatedResponse
 from app.schemas.audio_sample import AudioSampleItem
-from app.schemas.audio_sample_label import AudioSampleLabelCreateRequest, AudioSampleLabelCreate, AudioSampleLabelUpdate
+from app.schemas.audio_sample_label import (
+    AudioSampleLabelCreateRequest,
+    AudioSampleLabelCreate,
+    AudioSampleLabelUpdate,
+)
 from app.utils.service_result import handle_result
 from app.services.audio_sample import AudioSampleService
 from app.services.audio_sample_label import AudioSampleLabelService
@@ -35,7 +39,7 @@ async def upload_audio_samples(
     dataset_id: UUID,
     db: Annotated[Session, Depends(get_db)],
     audio_samples: list[UploadFile],
-    background_tasks: BackgroundTasks
+    background_tasks: BackgroundTasks,
 ):
     result = await AudioSampleService(db).batch_upload_audio_samples(
         dataset_id, audio_samples, background_tasks
@@ -66,7 +70,9 @@ async def audio_samples(
     status_code=status.HTTP_200_OK,
     tags=["Audio Samples"],
 )
-async def get_audio_sample_by_id(id: UUID, db: Annotated[Session, Depends(get_db)]):
+async def get_audio_sample_by_id(
+    id: UUID, db: Annotated[Session, Depends(get_db)]
+):
     result = AudioSampleService(db).get_audio_sample(id)
     return handle_result(result)
 
@@ -76,7 +82,9 @@ async def get_audio_sample_by_id(id: UUID, db: Annotated[Session, Depends(get_db
     response_model=AudioSampleItem,
     tags=["Audio Samples"],
 )
-async def accept_audio_sample(id: UUID, db: Annotated[Session, Depends(get_db)]):
+async def accept_audio_sample(
+    id: UUID, db: Annotated[Session, Depends(get_db)]
+):
     result = AudioSampleService(db).update_approval_status(
         id, AudioSampleApprovalStatus.ACCEPTED
     )
@@ -88,7 +96,9 @@ async def accept_audio_sample(id: UUID, db: Annotated[Session, Depends(get_db)])
     response_model=AudioSampleItem,
     tags=["Audio Samples"],
 )
-async def reject_audio_sample(id: UUID, db: Annotated[Session, Depends(get_db)]):
+async def reject_audio_sample(
+    id: UUID, db: Annotated[Session, Depends(get_db)]
+):
     result = AudioSampleService(db).update_approval_status(
         id, AudioSampleApprovalStatus.REJECTED
     )
@@ -102,14 +112,18 @@ async def reject_audio_sample(id: UUID, db: Annotated[Session, Depends(get_db)])
     tags=["Audio Samples"],
 )
 async def delete_audio_sample(
-    id: UUID, background_tasks: BackgroundTasks, db: Annotated[Session, Depends(get_db)]
+    id: UUID,
+    background_tasks: BackgroundTasks,
+    db: Annotated[Session, Depends(get_db)],
 ):
     result = AudioSampleService(db).delete_audio_sample(id, background_tasks)
     return handle_result(result)
 
 
 @router.get("/sample/{id}/data", tags=["Audio Samples"])
-async def get_audio_sample_data(id: UUID, db: Annotated[Session, Depends(get_db)]):
+async def get_audio_sample_data(
+    id: UUID, db: Annotated[Session, Depends(get_db)]
+):
     result = AudioSampleService(db).get_audio_sample_path(id)
     if not result.success:
         return handle_result(handle_result)
@@ -121,41 +135,55 @@ Audio Sample and Label connection APIs
 """
 
 
-@router.post("/sample/{id}/labels", status_code=status.HTTP_201_CREATED, tags=["Audio Samples"])
-async def create_audio_sample_label(id: UUID,
-                                    db: Annotated[Session, Depends(get_db)],
-                                    request_body: AudioSampleLabelCreateRequest):
-
-    create_model = AudioSampleLabelCreate(is_sample_level=request_body.is_sample_level,
-                                          start_time=request_body.start_time,
-                                          end_time=request_body.end_time,
-                                          label_id=request_body.label_id,
-                                          audio_sample_id=id)
-    result = AudioSampleLabelService(
-        db).create_audio_sample_label(create_model)
+@router.post(
+    "/sample/{id}/labels",
+    status_code=status.HTTP_201_CREATED,
+    tags=["Audio Samples"],
+)
+async def create_audio_sample_label(
+    id: UUID,
+    db: Annotated[Session, Depends(get_db)],
+    request_body: AudioSampleLabelCreateRequest,
+):
+    create_model = AudioSampleLabelCreate(
+        is_sample_level=request_body.is_sample_level,
+        start_time=request_body.start_time,
+        end_time=request_body.end_time,
+        label_id=request_body.label_id,
+        audio_sample_id=id,
+    )
+    result = AudioSampleLabelService(db).create_audio_sample_label(
+        create_model
+    )
     return handle_result(result)
 
 
 @router.delete("/sample/{id}/labels/{instance_id}", tags=["Audio Samples"])
-async def delete_audio_sample_label(id: UUID, instance_id: UUID, db: Annotated[Session, Depends(get_db)]):
-
-    result = AudioSampleLabelService(
-        db).delete_audio_sample_label(id, instance_id)
+async def delete_audio_sample_label(
+    id: UUID, instance_id: UUID, db: Annotated[Session, Depends(get_db)]
+):
+    result = AudioSampleLabelService(db).delete_audio_sample_label(
+        id, instance_id
+    )
     return handle_result(result)
 
 
 @router.patch("/sample/{id}/labels/{instance_id}", tags=["Audio Samples"])
-async def update_audio_sample_label(id: UUID,
-                                    instance_id: UUID,
-                                    db: Annotated[Session, Depends(get_db)],
-                                    request_body: AudioSampleLabelUpdate):
-
-    result = AudioSampleLabelService(
-        db).update_audio_sample_label(id, instance_id, request_body)
+async def update_audio_sample_label(
+    id: UUID,
+    instance_id: UUID,
+    db: Annotated[Session, Depends(get_db)],
+    request_body: AudioSampleLabelUpdate,
+):
+    result = AudioSampleLabelService(db).update_audio_sample_label(
+        id, instance_id, request_body
+    )
     return handle_result(result)
 
 
 @router.get("/sample/{id}/labels", tags=["Audio Samples"])
-async def get_audio_sample_labels(id: UUID, db: Annotated[Session, Depends(get_db)]):
+async def get_audio_sample_labels(
+    id: UUID, db: Annotated[Session, Depends(get_db)]
+):
     result = AudioSampleLabelService(db).get_audio_sample_labels(id)
     return handle_result(result)

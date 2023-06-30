@@ -47,7 +47,9 @@ async def create_dataset(
     tags=["Datasets"],
 )
 async def update_dataset(
-    id: UUID, dataset_update: DatasetUpdate, db: Annotated[Session, Depends(get_db)]
+    id: UUID,
+    dataset_update: DatasetUpdate,
+    db: Annotated[Session, Depends(get_db)],
 ):
     updated_dataset = DatasetService(db).update_dataset(id, dataset_update)
     return handle_result(updated_dataset)

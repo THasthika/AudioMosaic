@@ -17,7 +17,9 @@ router = APIRouter()
     status_code=status.HTTP_200_OK,
     tags=["Labels"],
 )
-async def list_labels(dataset_id: UUID, db: Annotated[Session, Depends(get_db)]):
+async def list_labels(
+    dataset_id: UUID, db: Annotated[Session, Depends(get_db)]
+):
     labels = LabelService(db).list_labels_by_dataset_id(dataset_id)
     return handle_result(labels)
 
@@ -46,7 +48,9 @@ async def create_labels(
     tags=["Labels"],
 )
 async def update_label(
-    id: UUID, label_update: LabelUpdate, db: Annotated[Session, Depends(get_db)]
+    id: UUID,
+    label_update: LabelUpdate,
+    db: Annotated[Session, Depends(get_db)],
 ):
     updated_label = LabelService(db).update_label(id, label_update)
     return handle_result(updated_label)
