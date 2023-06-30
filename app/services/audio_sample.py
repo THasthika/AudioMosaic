@@ -1,5 +1,4 @@
 from fastapi import BackgroundTasks, UploadFile
-
 from .base import BaseService
 from uuid import UUID, uuid4
 from app.utils.service_result import ServiceResult
