@@ -43,7 +43,9 @@ def test_list_audio_samples():
     assert response.status_code == 200
 
     # Check if the response contains at least one audio sample
-    audio_samples = response.json()
+    response_data = response.json()
+    audio_samples = response_data["items"]
+    assert response_data["total"] > 0
     assert len(audio_samples) >= 1
 
 
@@ -90,7 +92,7 @@ def test_update_approval_status():
 
 
 def test_delete_audio_sample():
-    # Create an label
+    # Create an audio sample
     with open(TEST_AUDIO_FILE, "rb") as f:
         create_response = client.post(
             f"/api/v1/audio-samples/{dataset_id}", files={"audio_samples": f}
@@ -108,7 +110,7 @@ def test_delete_audio_sample():
 
 
 def test_audio_sample_data_retrieval():
-    # Create an label
+    # Create an audio sample
     with open(TEST_AUDIO_FILE, "rb") as f:
         create_response = client.post(
             f"/api/v1/audio-samples/{dataset_id}", files={"audio_samples": f}

@@ -1,10 +1,12 @@
 from fastapi import APIRouter, Depends, status
 from uuid import UUID
+from typing import Annotated
 
 from app.config.database import get_db
 from app.schemas import LabelItem, LabelCreate, LabelUpdate
 from app.services.label import LabelService
 from app.utils.service_result import handle_result
+from sqlalchemy.orm import Session
 
 router = APIRouter()
 
@@ -15,7 +17,7 @@ router = APIRouter()
     status_code=status.HTTP_200_OK,
     tags=["Labels"],
 )
-async def list_labels(dataset_id: UUID, db: get_db = Depends()):
+async def list_labels(dataset_id: UUID, db: Annotated[Session, Depends(get_db)]):
     labels = LabelService(db).list_labels_by_dataset_id(dataset_id)
     return handle_result(labels)
 
@@ -29,7 +31,7 @@ async def list_labels(dataset_id: UUID, db: get_db = Depends()):
 async def create_labels(
     dataset_id: UUID,
     label_create_list: list[LabelCreate],
-    db: get_db = Depends(),
+    db: Annotated[Session, Depends(get_db)],
 ):
     for label in label_create_list:
         label.dataset_id = dataset_id
@@ -44,7 +46,7 @@ async def create_labels(
     tags=["Labels"],
 )
 async def update_label(
-    id: UUID, label_update: LabelUpdate, db: get_db = Depends()
+    id: UUID, label_update: LabelUpdate, db: Annotated[Session, Depends(get_db)]
 ):
     updated_label = LabelService(db).update_label(id, label_update)
     return handle_result(updated_label)
@@ -56,7 +58,7 @@ async def update_label(
     status_code=status.HTTP_200_OK,
     tags=["Labels"],
 )
-async def delete_label(id: UUID, db: get_db = Depends()):
+async def delete_label(id: UUID, db: Annotated[Session, Depends(get_db)]):
     deleted_label = LabelService(db).delete_label(id)
     return handle_result(deleted_label)
 
@@ -67,6 +69,6 @@ async def delete_label(id: UUID, db: get_db = Depends()):
     status_code=status.HTTP_200_OK,
     tags=["Labels"],
 )
-async def get_label_by_id(id: UUID, db: get_db = Depends()):
+async def get_label_by_id(id: UUID, db: Annotated[Session, Depends(get_db)]):
     label = LabelService(db).get_label(id)
     return handle_result(label)
