@@ -31,7 +31,7 @@ def test_list_datasets():
     assert response.status_code == 200
 
     # Check if the response contains at least one dataset
-    datasets = response.json()
+    datasets = response.json()["items"]
     assert len(datasets) >= 1
 
 

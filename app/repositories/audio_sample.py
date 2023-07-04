@@ -1,5 +1,6 @@
 from sqlalchemy.orm import Session
-from .base import BaseCRUDRepository
+from uuid import UUID
+from app.repositories.base import BaseCRUDRepository
 from app.exceptions.audio_sample import AudioSampleNotFound
 from app.models.audio_sample import AudioSample
 from app.schemas.audio_sample import AudioSampleCreate, AudioSampleUpdate
@@ -69,3 +70,21 @@ class AudioSampleRepository(BaseCRUDRepository):
             current_model.duration = update_model.duration
 
         return current_model
+
+    def get_paginated_list_by_dataset_id(
+        self, offset: int, limit: int, dataset_id: UUID
+    ):
+        total = (
+            self.db.query(AudioSample)
+            .filter(AudioSample.dataset_id == dataset_id)
+            .count()
+        )
+        audio_samples = (
+            self.db.query(AudioSample)
+            .filter(AudioSample.dataset_id == dataset_id)
+            .limit(limit)
+            .offset(offset)
+            .all()
+        )
+
+        return (audio_samples, total)
