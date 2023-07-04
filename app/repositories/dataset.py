@@ -29,14 +29,8 @@ class DatasetRepository(BaseCRUDRepository):
         return current_model
 
     def get_paginated_list(self, offset: int, limit: int):
-
         total = self.db.query(Dataset).count()
 
-        datasets = (
-            self.db.query(Dataset)
-            .offset(offset)
-            .limit(limit)
-            .all()
-        )
+        datasets = self.db.query(Dataset).offset(offset).limit(limit).all()
 
         return (datasets, total)

@@ -71,8 +71,9 @@ class AudioSampleRepository(BaseCRUDRepository):
 
         return current_model
 
-    def get_paginated_list_by_dataset_id(self, offset: int, limit: int, dataset_id: UUID):
-
+    def get_paginated_list_by_dataset_id(
+        self, offset: int, limit: int, dataset_id: UUID
+    ):
         total = (
             self.db.query(AudioSample)
             .filter(AudioSample.dataset_id == dataset_id)

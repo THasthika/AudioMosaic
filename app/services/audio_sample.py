@@ -155,7 +155,8 @@ class AudioSampleService(BaseService):
         offset = (page - 1) * limit
         try:
             (audio_samples, total) = AudioSampleRepository(
-                self.db).get_paginated_list_by_dataset_id(offset, limit, dataset_id)
+                self.db
+            ).get_paginated_list_by_dataset_id(offset, limit, dataset_id)
 
             audio_samples = list(
                 map(lambda x: AudioSampleItem.from_orm(x), audio_samples)

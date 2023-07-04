@@ -12,7 +12,6 @@ from app.schemas.generics import PaginatedResponse
 
 
 class DatasetService(BaseService):
-
     def __init__(self, db: Session) -> None:
         super().__init__(db)
         self.dataset_repo = DatasetRepository(self.db)
@@ -30,15 +29,12 @@ class DatasetService(BaseService):
     def list_datasets(self, query: DatasetQuery) -> ServiceResult:
         try:
             (datasets, total) = self.dataset_repo.get_paginated_list(
-                query.offset, query.limit)
+                query.offset, query.limit
+            )
             count = len(datasets)
             datasets = list(map(lambda x: DatasetItem.from_orm(x), datasets))
             return ServiceResult(
-                PaginatedResponse(
-                    count=count,
-                    total=total,
-                    items=datasets
-                )
+                PaginatedResponse(count=count, total=total, items=datasets)
             )
         except Exception as e:
             print(e)
@@ -51,9 +47,7 @@ class DatasetService(BaseService):
         self, id: UUID, update_dataset: DatasetUpdate
     ) -> ServiceResult:
         try:
-            updated_dataset = self.dataset_repo.update(
-                id, update_dataset
-            )
+            updated_dataset = self.dataset_repo.update(id, update_dataset)
             return ServiceResult(DatasetItem.from_orm(updated_dataset))
         except AppExceptionCase as e:
             return ServiceResult(e)
