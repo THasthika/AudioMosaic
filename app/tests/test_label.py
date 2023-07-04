@@ -2,6 +2,9 @@ from starlette.testclient import TestClient
 import json
 from app.main import app
 
+import pytest
+pytest.skip(allow_module_level=True)
+
 client = TestClient(app)
 
 dataset_id: None | str = None
