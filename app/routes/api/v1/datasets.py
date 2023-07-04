@@ -3,6 +3,7 @@ from uuid import UUID
 
 from app.config.database import get_db
 from app.schemas import DatasetItem, DatasetQuery, DatasetCreate, DatasetUpdate
+from app.schemas.generics import PaginatedResponse
 from app.services.dataset import DatasetService
 from app.utils.service_result import handle_result
 from typing import Annotated
@@ -13,7 +14,7 @@ router = APIRouter()
 
 @router.get(
     "",
-    response_model=list[DatasetItem],
+    response_model=PaginatedResponse[DatasetItem],
     status_code=status.HTTP_200_OK,
     tags=["Datasets"],
 )

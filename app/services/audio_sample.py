@@ -14,7 +14,7 @@ from app.schemas.audio_sample import (
     AudioSampleUpdate,
 )
 from app.repositories.audio_sample import AudioSampleRepository
-from app.models.audio_sample import AudioSample, AudioSampleApprovalStatus
+from app.models.audio_sample import AudioSampleApprovalStatus
 
 from app.tasks.audio_sample import (
     process_queued_audio_sample,
@@ -154,25 +154,16 @@ class AudioSampleService(BaseService):
     ) -> ServiceResult:
         offset = (page - 1) * limit
         try:
-            total_count = (
-                self.db.query(AudioSample)
-                .filter(AudioSample.dataset_id == dataset_id)
-                .count()
-            )
-            audio_samples = (
-                self.db.query(AudioSample)
-                .filter(AudioSample.dataset_id == dataset_id)
-                .limit(limit)
-                .offset(offset)
-                .all()
-            )
+            (audio_samples, total) = AudioSampleRepository(
+                self.db).get_paginated_list_by_dataset_id(offset, limit, dataset_id)
+
             audio_samples = list(
                 map(lambda x: AudioSampleItem.from_orm(x), audio_samples)
             )
             sample_count = len(audio_samples)
             return ServiceResult(
                 PaginatedResponse(
-                    count=sample_count, total=total_count, items=audio_samples
+                    count=sample_count, total=total, items=audio_samples
                 )
             )
         except Exception as e:
