@@ -23,6 +23,25 @@ def mock_sqlalchemy_orm():
     return _mock_sqlalchemy_orm
 
 
+@pytest.fixture
+def mock_repository():
+    def _mock_repository(
+        *, exceptions: list[tuple[str, Exception, list[any]]] = []
+    ):
+        repo = MagicMock()
+
+        for func_name, excep, args in exceptions:
+
+            def _temp(*_args):
+                raise excep(*args)
+
+            repo.__getattr__(func_name).side_effect = _temp
+
+        return repo
+
+    return _mock_repository
+
+
 # # @pytest.fixture
 # # def mock_sqlalchemy_session(mocker):
 # #     mock = mocker.patch(

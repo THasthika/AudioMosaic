@@ -1,8 +1,5 @@
 from uuid import UUID
 
-from sqlalchemy.orm import Session
-
-from .base import BaseService
 from app.schemas import DatasetCreate, DatasetQuery, DatasetItem, DatasetUpdate
 from app.repositories import DatasetRepository
 from app.utils.service_result import ServiceResult
@@ -11,10 +8,9 @@ from app.exceptions.base import AppExceptionCase
 from app.schemas.generics import PaginatedResponse
 
 
-class DatasetService(BaseService):
-    def __init__(self, db: Session) -> None:
-        super().__init__(db)
-        self.dataset_repo = DatasetRepository(self.db)
+class DatasetService:
+    def __init__(self, dataset_repo: DatasetRepository) -> None:
+        self.dataset_repo = dataset_repo
 
     def create_dataset(self, create_dataset: DatasetCreate) -> ServiceResult:
         try:
