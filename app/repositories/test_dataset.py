@@ -8,12 +8,12 @@ from unittest.mock import MagicMock
 
 
 class TestDatasetRepository:
-
     def test_create(self):
         create_schema = DatasetCreate(name="Hello")
 
         def refresh_side_effect(m):
             m.id = uuid4()
+
         db = MagicMock()
         db.refresh.side_effect = refresh_side_effect
 
@@ -29,7 +29,8 @@ class TestDatasetRepository:
         id = uuid4()
 
         db = mock_sqlalchemy_orm(
-            ['query', 'filter'], ('first', Dataset(id=id, name="Hello")))
+            ["query", "filter"], ("first", Dataset(id=id, name="Hello"))
+        )
 
         repo = DatasetRepository(db)
         updated_model = repo.update(id, update_schema)
@@ -38,23 +39,19 @@ class TestDatasetRepository:
         assert updated_model.id == id
 
     def test_update_with_non_existent_dataset(self, mock_sqlalchemy_orm):
-
         update_schema = DatasetUpdate(name="Hello B")
 
-        db = mock_sqlalchemy_orm(
-            ['query', 'filter'], ('first', None))
+        db = mock_sqlalchemy_orm(["query", "filter"], ("first", None))
 
         repo = DatasetRepository(db)
         with raises(DatasetNotFound):
             repo.update(id, update_schema)
 
     def test_delete(self, mock_sqlalchemy_orm):
-
         id = uuid4()
         model = Dataset(id=id, name="Hello")
 
-        db = mock_sqlalchemy_orm(
-            ['query', 'filter'], ('first', model))
+        db = mock_sqlalchemy_orm(["query", "filter"], ("first", model))
 
         repo = DatasetRepository(db)
         deleted_model = repo.delete(id)
@@ -64,18 +61,14 @@ class TestDatasetRepository:
         assert deleted_model.id == id
 
     def test_delete_with_non_existent_dataset(self, mock_sqlalchemy_orm):
-
-        db = mock_sqlalchemy_orm(
-            ['query', 'filter'], ('first', None))
+        db = mock_sqlalchemy_orm(["query", "filter"], ("first", None))
 
         repo = DatasetRepository(db)
         with raises(DatasetNotFound):
             repo.delete(id)
 
     def test_get_all(self, mock_sqlalchemy_orm):
-
-        db = mock_sqlalchemy_orm(
-            [], ('query', []))
+        db = mock_sqlalchemy_orm([], ("query", []))
 
         repo = DatasetRepository(db)
 
@@ -83,10 +76,10 @@ class TestDatasetRepository:
         db.query.assert_called_once()
 
     def test_get_by_id(self, mock_sqlalchemy_orm):
-
         id = uuid4()
         db = mock_sqlalchemy_orm(
-            ['query', 'filter'], ('first', Dataset(id=id, name="Hello")))
+            ["query", "filter"], ("first", Dataset(id=id, name="Hello"))
+        )
 
         repo = DatasetRepository(db)
 
@@ -97,20 +90,17 @@ class TestDatasetRepository:
         db.first.assert_called_once()
 
     def test_get_paginated_list(self, mock_sqlalchemy_orm):
-
         models = [
             Dataset(id=uuid4(), name="Hello 1"),
-            Dataset(id=uuid4(), name="Hello 2")
+            Dataset(id=uuid4(), name="Hello 2"),
         ]
 
-        db = mock_sqlalchemy_orm([
-            (
-                ['query'], ('count', len(models))
-            ),
-            (
-                ['query', 'offset', 'limit'], ('all', models)
-            ),
-        ])
+        db = mock_sqlalchemy_orm(
+            [
+                (["query"], ("count", len(models))),
+                (["query", "offset", "limit"], ("all", models)),
+            ]
+        )
 
         repo = DatasetRepository(db)
 

@@ -4,7 +4,10 @@ from unittest.mock import MagicMock
 
 @pytest.fixture
 def mock_sqlalchemy_orm():
-    def _mock_sqlalchemy_orm(configs: list[tuple[list[str], tuple[str, any]]] | list[str], last_func: tuple[str, any] = None):
+    def _mock_sqlalchemy_orm(
+        configs: list[tuple[list[str], tuple[str, any]]] | list[str],
+        last_func: tuple[str, any] = None,
+    ):
         db = MagicMock()
 
         if last_func is not None:
