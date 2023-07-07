@@ -79,11 +79,11 @@ jobs:
       # # they'll be installed and working.
       # - name: Poetry install
       #   run: poetry install --no-interaction
+      # poetry install --no-interaction --no-root --with=dev
 
       - name: Run tests and coverage
         run: |
-          pip install coverage pytest pytest-mock mock
-          coverage run -m pytest
+          poetry run coverage run -m pytest
 
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v3
