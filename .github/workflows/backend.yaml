@@ -82,7 +82,7 @@ jobs:
 
       - name: Run tests and coverage
         run: |
-          pip install coverage
+          pip install coverage pytest pytest-mock mock
           coverage run -m pytest
 
       - name: Upload coverage reports to Codecov
