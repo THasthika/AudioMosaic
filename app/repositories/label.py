@@ -23,7 +23,7 @@ class LabelRepository(BaseCRUDRepository):
             for create_label in create_labels:
                 label = self.get_model_from_create_type(create_label)
                 self.db.add(label)
-            ret.append(label)
+                ret.append(label)
 
         for label in ret:
             self.db.refresh(label)

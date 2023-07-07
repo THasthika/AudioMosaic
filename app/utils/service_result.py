@@ -45,7 +45,7 @@ def caller_info() -> str:
 def handle_result(result: ServiceResult):
     if not result.success:
         with result as exception:
-            print(f"{exception} | caller={caller_info()}")
+            # print(f"{exception} | caller={caller_info()}")
             # logger.error(f"{exception} | caller={caller_info()}")
             raise exception
     with result as result:
