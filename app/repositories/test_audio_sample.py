@@ -3,7 +3,11 @@ from pytest import raises
 from app.repositories.audio_sample import AudioSampleRepository
 from app.exceptions.audio_sample import AudioSampleNotFound
 from app.schemas.audio_sample import AudioSampleCreate, AudioSampleUpdate
-from app.models.audio_sample import AudioSample, AudioSampleApprovalStatus, AudioSampleProcessingStatus
+from app.models.audio_sample import (
+    AudioSample,
+    AudioSampleApprovalStatus,
+    AudioSampleProcessingStatus,
+)
 from unittest.mock import MagicMock
 
 
@@ -12,13 +16,12 @@ class TestAudioSampleRepository:
         dataset_id = uuid4()
 
         create_schema = AudioSampleCreate(
-            parent_id=None,
-            path="some_path.mp3",
-            dataset_id=dataset_id
+            parent_id=None, path="some_path.mp3", dataset_id=dataset_id
         )
 
         def refresh_side_effect(m):
             m.id = uuid4()
+
         db = MagicMock()
         db.refresh.side_effect = refresh_side_effect
 
@@ -33,14 +36,10 @@ class TestAudioSampleRepository:
 
         create_schemas = [
             AudioSampleCreate(
-                parent_id=None,
-                path="some_path.mp3",
-                dataset_id=dataset_id
+                parent_id=None, path="some_path.mp3", dataset_id=dataset_id
             ),
             AudioSampleCreate(
-                parent_id=None,
-                path="some_path1.mp3",
-                dataset_id=dataset_id
+                parent_id=None, path="some_path1.mp3", dataset_id=dataset_id
             ),
         ]
 
@@ -73,7 +72,7 @@ class TestAudioSampleRepository:
             processing_status=AudioSampleProcessingStatus.QUEUED,
             sample_rate=44100,
             bit_rate=100,
-            duration=1.5
+            duration=1.5,
         )
 
         id = uuid4()
@@ -87,7 +86,7 @@ class TestAudioSampleRepository:
                     id=id,
                     parent_id=None,
                     path="some_path.mp3",
-                    dataset_id=dataset_id
+                    dataset_id=dataset_id,
                 ),
             ),
         )
@@ -97,7 +96,9 @@ class TestAudioSampleRepository:
 
         assert updated_model.parent_id == p_id
         assert updated_model.approval_status == update_schema.approval_status
-        assert updated_model.processing_status == update_schema.processing_status
+        assert (
+            updated_model.processing_status == update_schema.processing_status
+        )
         assert updated_model.sample_rate == update_schema.sample_rate
         assert updated_model.bit_rate == update_schema.bit_rate
         assert updated_model.duration == update_schema.duration
@@ -114,11 +115,7 @@ class TestAudioSampleRepository:
 
     def test_delete(self, mock_sqlalchemy_orm):
         id = uuid4()
-        model = AudioSample(
-            id=id,
-            parent_id=None,
-            path="some_path.mp3"
-        )
+        model = AudioSample(id=id, parent_id=None, path="some_path.mp3")
 
         db = mock_sqlalchemy_orm(["query", "filter"], ("first", model))
 
@@ -138,14 +135,8 @@ class TestAudioSampleRepository:
 
     def test_bulk_delete(self, mock_sqlalchemy_orm):
         models = [
-            AudioSample(
-                parent_id=None,
-                path="some_path.mp3"
-            ),
-            AudioSample(
-                parent_id=None,
-                path="some_path1.mp3"
-            ),
+            AudioSample(parent_id=None, path="some_path.mp3"),
+            AudioSample(parent_id=None, path="some_path1.mp3"),
         ]
         db = mock_sqlalchemy_orm(["query", "filter"], ("first", None))
         repo = AudioSampleRepository(db)
@@ -156,10 +147,7 @@ class TestAudioSampleRepository:
 
     def test_set_parent_model_null(self, mock_sqlalchemy_orm):
         db = mock_sqlalchemy_orm([])
-        model = AudioSample(
-            parent_id=uuid4(),
-            path="some_path1.mp3"
-        )
+        model = AudioSample(parent_id=uuid4(), path="some_path1.mp3")
         repo = AudioSampleRepository(db)
         updated_model = repo.set_model_parent_null(model)
         assert updated_model.parent_id is None
@@ -178,11 +166,7 @@ class TestAudioSampleRepository:
             ["query", "filter"],
             (
                 "first",
-                AudioSample(
-                    id=id,
-                    parent_id=None,
-                    path="some_path.mp3"
-                ),
+                AudioSample(id=id, parent_id=None, path="some_path.mp3"),
             ),
         )
 
@@ -196,16 +180,8 @@ class TestAudioSampleRepository:
 
     def test_get_paginated_list(self, mock_sqlalchemy_orm):
         models = [
-            AudioSample(
-                id=uuid4(),
-                parent_id=None,
-                path="some_path.mp3"
-            ),
-            AudioSample(
-                id=uuid4(),
-                parent_id=None,
-                path="some_path1.mp3"
-            ),
+            AudioSample(id=uuid4(), parent_id=None, path="some_path.mp3"),
+            AudioSample(id=uuid4(), parent_id=None, path="some_path1.mp3"),
         ]
 
         db = mock_sqlalchemy_orm(
@@ -217,7 +193,9 @@ class TestAudioSampleRepository:
 
         repo = AudioSampleRepository(db)
 
-        (ret_models, count) = repo.get_paginated_list_by_dataset_id(0, 10, uuid4())
+        (ret_models, count) = repo.get_paginated_list_by_dataset_id(
+            0, 10, uuid4()
+        )
 
         assert count == len(models)
         assert len(models) == len(ret_models)
