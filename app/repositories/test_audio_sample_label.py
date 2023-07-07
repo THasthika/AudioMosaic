@@ -2,18 +2,18 @@ from uuid import uuid4
 from pytest import raises
 from app.repositories.audio_sample_label import AudioSampleLabelRepository
 from app.exceptions.label import LabelNotFound
-from app.schemas.audio_sample_label import AudioSampleLabelCreate, AudioSampleLabelUpdate
+from app.schemas.audio_sample_label import (
+    AudioSampleLabelCreate,
+    AudioSampleLabelUpdate,
+)
 from app.models.audio_sample_label import AudioSampleLabel
 from unittest.mock import MagicMock
 
 
 class TestAudioSampleRepository:
     def test_create(self):
-
         create_schema = AudioSampleLabelCreate(
-            label_id=uuid4(),
-            audio_sample_id=uuid4(),
-            is_sample_level=True
+            label_id=uuid4(), audio_sample_id=uuid4(), is_sample_level=True
         )
 
         def refresh_side_effect(m):
@@ -29,9 +29,7 @@ class TestAudioSampleRepository:
 
     def test_update_not_sample_level(self, mock_sqlalchemy_orm):
         update_schema = AudioSampleLabelUpdate(
-            is_sample_level=False,
-            start_time=1.0,
-            end_time=2.0
+            is_sample_level=False, start_time=1.0, end_time=2.0
         )
 
         id = uuid4()
@@ -44,7 +42,7 @@ class TestAudioSampleRepository:
                     id=id,
                     label_id=uuid4(),
                     audio_sample_id=uuid4(),
-                    is_sample_level=True
+                    is_sample_level=True,
                 ),
             ),
         )
@@ -57,9 +55,7 @@ class TestAudioSampleRepository:
         assert updated_model.end_time == update_schema.end_time
 
     def test_update_sample_level(self, mock_sqlalchemy_orm):
-        update_schema = AudioSampleLabelUpdate(
-            is_sample_level=True
-        )
+        update_schema = AudioSampleLabelUpdate(is_sample_level=True)
 
         id = uuid4()
 
@@ -73,7 +69,7 @@ class TestAudioSampleRepository:
                     audio_sample_id=uuid4(),
                     is_sample_level=False,
                     start_time=1.0,
-                    end_time=2.0
+                    end_time=2.0,
                 ),
             ),
         )
@@ -87,9 +83,7 @@ class TestAudioSampleRepository:
 
     def test_update_with_non_existent_dataset(self, mock_sqlalchemy_orm):
         update_schema = AudioSampleLabelUpdate(
-            is_sample_level=False,
-            start_time=1.0,
-            end_time=2.0
+            is_sample_level=False, start_time=1.0, end_time=2.0
         )
 
         db = mock_sqlalchemy_orm(["query", "filter"], ("first", None))
@@ -104,7 +98,7 @@ class TestAudioSampleRepository:
             id=id,
             label_id=uuid4(),
             audio_sample_id=uuid4(),
-            is_sample_level=True
+            is_sample_level=True,
         )
 
         db = mock_sqlalchemy_orm(["query", "filter"], ("first", model))
@@ -133,7 +127,7 @@ class TestAudioSampleRepository:
                     id=id,
                     label_id=uuid4(),
                     audio_sample_id=uuid4(),
-                    is_sample_level=True
+                    is_sample_level=True,
                 ),
             ),
         )
@@ -153,14 +147,14 @@ class TestAudioSampleRepository:
                 id=id,
                 label_id=uuid4(),
                 audio_sample_id=uuid4(),
-                is_sample_level=True
+                is_sample_level=True,
             ),
             AudioSampleLabel(
                 id=id,
                 label_id=uuid4(),
                 audio_sample_id=uuid4(),
-                is_sample_level=True
-            )
+                is_sample_level=True,
+            ),
         ]
         db = mock_sqlalchemy_orm(
             ["query", "filter"],
