@@ -26,7 +26,7 @@ class AudioSampleRepository(BaseCRUDRepository):
                     create_audio_sample
                 )
                 self.db.add(audio_sample)
-            ret.append(audio_sample)
+                ret.append(audio_sample)
 
         for s in ret:
             self.db.refresh(s)
