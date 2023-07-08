@@ -151,3 +151,13 @@ class TestLabelRepository:
         assert ret is not None
         assert ret.id == id
         db.first.assert_called_once()
+
+    def test_get_get_by_dataset_id(self, mock_sqlalchemy_orm):
+        db = mock_sqlalchemy_orm(["query", "filter"], ("all", []))
+
+        repo = LabelRepository(db)
+        models = repo.get_by_dataset_id(uuid4())
+
+        assert len(models) == 0
+
+        db.all.assert_called_once()

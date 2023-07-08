@@ -1,5 +1,3 @@
-import pytest
-from pytest import raises
 from uuid import uuid4
 from app.services.dataset import DatasetService
 from app.schemas.dataset import DatasetCreate, DatasetQuery, DatasetUpdate
