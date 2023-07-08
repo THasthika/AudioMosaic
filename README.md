@@ -1,5 +1,7 @@
 # AudioMosaic
 
+[![codecov](https://codecov.io/gh/THasthika/AudioMosaic/branch/main/graph/badge.svg?token=7A74O6XKEU)](https://codecov.io/gh/THasthika/AudioMosaic)
+
 <!-- AudioMosaic Logo -->
 
 AudioMosaic is an Audio Dataset Manager designed specifically for Machine Learning projects. It provides a simple and intuitive interface to organize, manage, and preprocess audio datasets, making it easier to work with audio data in your machine learning pipeline.

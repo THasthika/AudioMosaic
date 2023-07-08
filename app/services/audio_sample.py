@@ -1,9 +1,7 @@
 from fastapi import BackgroundTasks, UploadFile
-from .base import BaseService
 from uuid import UUID, uuid4
 from app.utils.service_result import ServiceResult
 from app.exceptions.base import AppExceptionCase
-from sqlalchemy.exc import IntegrityError
 from app.schemas.generics import PaginatedResponse
 
 import app.exceptions.audio_sample as audio_sample_exceptions
@@ -28,8 +26,11 @@ import os
 # from app.models.audio_sample import Label
 
 
-class AudioSampleService(BaseService):
+class AudioSampleService:
     ACCEPTED_FILE_TYPES = ["audio/mpeg"]
+
+    def __init__(self, audio_sample_repo: AudioSampleRepository) -> None:
+        self.audio_sample_repo = audio_sample_repo
 
     @staticmethod
     def _is_audio_sample_valid_content_type(audio_sample: UploadFile):
@@ -43,26 +44,32 @@ class AudioSampleService(BaseService):
     def _make_insert_models(
         self, dataset_id: UUID, audio_sample_files: list[UploadFile]
     ) -> list[AudioSampleCreate]:
-        audio_sample_create_models: list[AudioSampleCreate] = []
+        try:
+            audio_sample_create_models: list[AudioSampleCreate] = []
 
-        for file in audio_sample_files:
-            file_uuid = uuid4()
-            [_, ext] = os.path.splitext(file.filename)
-            if ext is None:
-                raise audio_sample_exceptions.AudioSampleIncorrectContentType(
-                    {"reason": f"invalid file extension: {file.filename}"}
+            for file in audio_sample_files:
+                file_uuid = uuid4()
+                [_, ext] = os.path.splitext(file.filename)
+                if ext is None:
+                    raise audio_sample_exceptions.AudioSampleIncorrectContentType(
+                        {"reason": f"invalid file extension: {file.filename}"}
+                    )
+                file_path = os.path.join(
+                    STORAGE_AUDIO_SAMPLE_PATH,
+                    f"{dataset_id}",
+                    f"{file_uuid}{ext}",
                 )
-            file_path = os.path.join(
-                STORAGE_AUDIO_SAMPLE_PATH, f"{dataset_id}", f"{file_uuid}{ext}"
-            )
 
-            audio_sample_create_models.append(
-                AudioSampleCreate(
-                    path=file_path, parent_id=None, dataset_id=dataset_id
+                audio_sample_create_models.append(
+                    AudioSampleCreate(
+                        path=file_path, parent_id=None, dataset_id=dataset_id
+                    )
                 )
-            )
 
-        return audio_sample_create_models
+            return audio_sample_create_models
+        except Exception as e:
+            print(e)
+            raise AppExceptionCase(400, {"reason": "Invalid files"})
 
     async def batch_upload_audio_samples(
         self,
@@ -71,7 +78,7 @@ class AudioSampleService(BaseService):
         background_tasks: BackgroundTasks,
     ) -> ServiceResult:
         inserted_models = None
-        audio_sample_repo = AudioSampleRepository(self.db)
+        audio_sample_repo = self.audio_sample_repo
 
         try:
             # validate files
@@ -106,7 +113,9 @@ class AudioSampleService(BaseService):
             # trigger background task to process files
             for inserted_model in inserted_models:
                 background_tasks.add_task(
-                    process_queued_audio_sample, self.db, inserted_model.id
+                    process_queued_audio_sample,
+                    self.audio_sample_repo,
+                    inserted_model.id,
                 )
 
             return ServiceResult(
@@ -133,14 +142,6 @@ class AudioSampleService(BaseService):
                     {"reason": "Internal error!"}
                 )
             )
-        except IntegrityError as e:
-            error_str = f"{e}"
-            error_str = error_str.splitlines()[0]
-            return ServiceResult(
-                audio_sample_exceptions.AudioSampleCreateFailed(
-                    {"reason": "Database insert failed!", "context": error_str}
-                )
-            )
         except AppExceptionCase as e:
             return ServiceResult(e)
         except Exception as e:
@@ -154,9 +155,12 @@ class AudioSampleService(BaseService):
     ) -> ServiceResult:
         offset = (page - 1) * limit
         try:
-            (audio_samples, total) = AudioSampleRepository(
-                self.db
-            ).get_paginated_list_by_dataset_id(offset, limit, dataset_id)
+            (
+                audio_samples,
+                total,
+            ) = self.audio_sample_repo.get_paginated_list_by_dataset_id(
+                offset, limit, dataset_id
+            )
 
             audio_samples = list(
                 map(lambda x: AudioSampleItem.from_orm(x), audio_samples)
@@ -175,7 +179,7 @@ class AudioSampleService(BaseService):
 
     def get_audio_sample(self, sample_id: UUID) -> ServiceResult:
         try:
-            audio_sample = AudioSampleRepository(self.db).get_by_id(sample_id)
+            audio_sample = self.audio_sample_repo.get_by_id(sample_id)
             return ServiceResult(AudioSampleItem.from_orm(audio_sample))
         except AppExceptionCase as e:
             return ServiceResult(e)
@@ -188,7 +192,7 @@ class AudioSampleService(BaseService):
     ) -> ServiceResult:
         try:
             update_model = AudioSampleUpdate(approval_status=new_status)
-            audio_sample = AudioSampleRepository(self.db).update(
+            audio_sample = self.audio_sample_repo.update(
                 sample_id, update_model
             )
             return ServiceResult(AudioSampleItem.from_orm(audio_sample))
@@ -205,9 +209,7 @@ class AudioSampleService(BaseService):
         background_tasks: BackgroundTasks,
     ) -> ServiceResult:
         try:
-            deleted_audio_sample = AudioSampleRepository(self.db).delete(
-                sample_id
-            )
+            deleted_audio_sample = self.audio_sample_repo.delete(sample_id)
             background_tasks.add_task(
                 delete_audio_sample, deleted_audio_sample.path
             )
@@ -224,7 +226,7 @@ class AudioSampleService(BaseService):
 
     def get_audio_sample_path(self, sample_id: UUID) -> ServiceResult:
         try:
-            audio_sample = AudioSampleRepository(self.db).get_by_id(sample_id)
+            audio_sample = self.audio_sample_repo.get_by_id(sample_id)
             return ServiceResult(audio_sample.path)
         except AppExceptionCase as e:
             return ServiceResult(e)

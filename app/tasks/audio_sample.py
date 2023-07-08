@@ -12,10 +12,10 @@ from app.models.audio_sample import AudioSampleProcessingStatus
 import os
 
 
-async def process_queued_audio_sample(db: Session, audio_sample_id: UUID):
+async def process_queued_audio_sample(
+    audio_sample_repo: AudioSampleRepository, audio_sample_id: UUID
+):
     logging.debug(f"PROCESSING Audio Sample: {audio_sample_id}")
-
-    audio_sample_repo = AudioSampleRepository(db)
 
     audio_sample = audio_sample_repo.get_by_id(audio_sample_id)
     if audio_sample is None:

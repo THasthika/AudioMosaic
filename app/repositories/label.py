@@ -1,3 +1,4 @@
+from uuid import UUID
 from sqlalchemy.orm import Session
 from .base import BaseCRUDRepository
 from app.exceptions.label import LabelNotFound
@@ -23,7 +24,7 @@ class LabelRepository(BaseCRUDRepository):
             for create_label in create_labels:
                 label = self.get_model_from_create_type(create_label)
                 self.db.add(label)
-            ret.append(label)
+                ret.append(label)
 
         for label in ret:
             self.db.refresh(label)
@@ -51,3 +52,9 @@ class LabelRepository(BaseCRUDRepository):
             current_model.description = update_model.description
 
         return current_model
+
+    def get_by_dataset_id(self, dataset_id: UUID) -> list[Label]:
+        labels = (
+            self.db.query(Label).filter(Label.dataset_id == dataset_id).all()
+        )
+        return labels

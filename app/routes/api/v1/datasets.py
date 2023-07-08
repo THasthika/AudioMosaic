@@ -4,12 +4,23 @@ from uuid import UUID
 from app.config.database import get_db
 from app.schemas import DatasetItem, DatasetQuery, DatasetCreate, DatasetUpdate
 from app.schemas.generics import PaginatedResponse
+from app.repositories.dataset import DatasetRepository
 from app.services.dataset import DatasetService
 from app.utils.service_result import handle_result
 from typing import Annotated
 from sqlalchemy.orm import Session
 
 router = APIRouter()
+
+
+def get_dataset_repo(db: Annotated[Session, Depends(get_db)]):
+    return DatasetRepository(db)
+
+
+def get_dataset_service(
+    dataset_repo: Annotated[DatasetRepository, Depends(get_dataset_repo)]
+):
+    return DatasetService(dataset_repo)
 
 
 @router.get(
@@ -19,12 +30,12 @@ router = APIRouter()
     tags=["Datasets"],
 )
 async def list_datasets(
-    db: Annotated[Session, Depends(get_db)],
+    dataset_service: Annotated[DatasetService, Depends(get_dataset_service)],
     page: Annotated[int, Query(ge=1)] = 1,
     limit: Annotated[int, Query(ge=1, le=50)] = 10,
 ):
     query = DatasetQuery(name=None, offset=(page - 1) * limit, limit=limit)
-    datasets = DatasetService(db).list_datasets(query)
+    datasets = dataset_service.list_datasets(query)
     return handle_result(datasets)
 
 
@@ -35,9 +46,10 @@ async def list_datasets(
     tags=["Datasets"],
 )
 async def create_dataset(
-    dataset_create: DatasetCreate, db: Annotated[Session, Depends(get_db)]
+    dataset_create: DatasetCreate,
+    dataset_service: Annotated[DatasetService, Depends(get_dataset_service)],
 ):
-    dataset = DatasetService(db).create_dataset(dataset_create)
+    dataset = dataset_service.create_dataset(dataset_create)
     return handle_result(dataset)
 
 
@@ -50,9 +62,9 @@ async def create_dataset(
 async def update_dataset(
     id: UUID,
     dataset_update: DatasetUpdate,
-    db: Annotated[Session, Depends(get_db)],
+    dataset_service: Annotated[DatasetService, Depends(get_dataset_service)],
 ):
-    updated_dataset = DatasetService(db).update_dataset(id, dataset_update)
+    updated_dataset = dataset_service.update_dataset(id, dataset_update)
     return handle_result(updated_dataset)
 
 
@@ -62,8 +74,11 @@ async def update_dataset(
     status_code=status.HTTP_200_OK,
     tags=["Datasets"],
 )
-async def delete_dataset(id: UUID, db: Annotated[Session, Depends(get_db)]):
-    deleted_dataset = DatasetService(db).delete_dataset(id)
+async def delete_dataset(
+    id: UUID,
+    dataset_service: Annotated[DatasetService, Depends(get_dataset_service)],
+):
+    deleted_dataset = dataset_service.delete_dataset(id)
     return handle_result(deleted_dataset)
 
 
@@ -73,6 +88,9 @@ async def delete_dataset(id: UUID, db: Annotated[Session, Depends(get_db)]):
     status_code=status.HTTP_200_OK,
     tags=["Datasets"],
 )
-async def get_dataset_by_id(id: UUID, db: Annotated[Session, Depends(get_db)]):
-    dataset = DatasetService(db).get_dataset(id)
+async def get_dataset_by_id(
+    id: UUID,
+    dataset_service: Annotated[DatasetService, Depends(get_dataset_service)],
+):
+    dataset = dataset_service.get_dataset(id)
     return handle_result(dataset)

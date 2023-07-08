@@ -26,3 +26,6 @@ class Label(Base):
     dataset = relationship("Dataset", foreign_keys="Label.dataset_id")
 
     __table_args__ = (UniqueConstraint("dataset_id", "name"),)
+
+    def __repr__(self):
+        return "Label ({}, {}, {})".format(self.id, self.name, self.color)
