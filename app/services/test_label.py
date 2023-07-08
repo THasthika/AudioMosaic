@@ -1,6 +1,6 @@
 import pytest
 from uuid import uuid4
-from app.schemas.label import LabelCreate, LabelUpdate, LabelItem
+from app.schemas.label import LabelCreate, LabelUpdate
 from app.models import Label
 from app.exceptions.base import AppExceptionCase
 import app.exceptions.label as label_exceptions
