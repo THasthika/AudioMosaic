@@ -1,5 +1,3 @@
-from .base import BaseService
-
 from fastapi import status
 from uuid import UUID
 
@@ -17,13 +15,18 @@ from app.exceptions.base import AppExceptionCase
 from sqlalchemy.exc import IntegrityError
 
 
-class AudioSampleLabelService(BaseService):
+class AudioSampleLabelService:
+    def __init__(
+        self, audio_sample_label_repo: AudioSampleLabelRepository
+    ) -> None:
+        self.audio_sample_label_repo = audio_sample_label_repo
+
     def _get_sample_label(
         self, audio_sample_id: UUID, label_instance_id: UUID
     ) -> AudioSampleLabel:
-        audio_sample_label: AudioSampleLabel = AudioSampleLabelRepository(
-            self.db
-        ).get_by_id(label_instance_id)
+        audio_sample_label: AudioSampleLabel = (
+            self.audio_sample_label_repo.get_by_id(label_instance_id)
+        )
 
         if audio_sample_label is None:
             raise AppExceptionCase(
@@ -75,9 +78,9 @@ class AudioSampleLabelService(BaseService):
                 )
             )
 
-            created_model: AudioSampleLabel = AudioSampleLabelRepository(
-                self.db
-            ).create(create_request)
+            created_model: AudioSampleLabel = (
+                self.audio_sample_label_repo.create(create_request)
+            )
             return ServiceResult(AudioSampleLabelItem.from_orm(created_model))
         except AppExceptionCase as e:
             return ServiceResult(e)
@@ -104,7 +107,7 @@ class AudioSampleLabelService(BaseService):
             audio_sample_label = self._get_sample_label(
                 audio_sample_id, label_instance_id
             )
-            AudioSampleLabelRepository(self.db).delete(audio_sample_label.id)
+            self.audio_sample_label_repo.delete(audio_sample_label.id)
             return ServiceResult(
                 AudioSampleLabelItem.from_orm(audio_sample_label)
             )
@@ -135,7 +138,7 @@ class AudioSampleLabelService(BaseService):
             audio_sample_label = self._get_sample_label(
                 audio_sample_id, label_instance_id
             )
-            updated_model = AudioSampleLabelRepository(self.db).update(
+            updated_model = self.audio_sample_label_repo.update(
                 audio_sample_label.id, update_request
             )
             return ServiceResult(AudioSampleLabelItem.from_orm(updated_model))
@@ -152,9 +155,11 @@ class AudioSampleLabelService(BaseService):
 
     def get_audio_sample_labels(self, audio_sample_id: UUID) -> ServiceResult:
         try:
-            audio_sample_labels = AudioSampleLabelRepository(
-                self.db
-            ).get_by_audio_sample_id(audio_sample_id)
+            audio_sample_labels = (
+                self.audio_sample_label_repo.get_by_audio_sample_id(
+                    audio_sample_id
+                )
+            )
             return ServiceResult(
                 list(
                     map(

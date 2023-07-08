@@ -5,17 +5,18 @@ from uuid import uuid4
 from fastapi import UploadFile
 from unittest.mock import MagicMock, patch
 from app.services.audio_sample import AudioSampleService
-from app.models.audio_sample import AudioSample, AudioSampleApprovalStatus, AudioSampleProcessingStatus
+from app.models.audio_sample import (
+    AudioSample,
+    AudioSampleApprovalStatus,
+    AudioSampleProcessingStatus,
+)
 from datetime import datetime
 
 
 @pytest.fixture
 def uploaded_mpeg_file():
     file_data = os.urandom(20)
-    headers = {
-        "content-type": "audio/mpeg",
-        "content-length": len(file_data)
-    }
+    headers = {"content-type": "audio/mpeg", "content-length": len(file_data)}
     x = io.BytesIO(file_data)
     file = UploadFile(x, headers=headers, filename="test.mp3")
     return file
@@ -28,7 +29,7 @@ def uploaded_mpeg_file_list():
         file_data = os.urandom(20)
         headers = {
             "content-type": "audio/mpeg",
-            "content-length": len(file_data)
+            "content-length": len(file_data),
         }
         x = io.BytesIO(file_data)
         file = UploadFile(x, headers=headers, filename="test.mp3")
@@ -41,10 +42,7 @@ def uploaded_invalid_file_list():
     files = []
     for _ in range(2):
         file_data = os.urandom(20)
-        headers = {
-            "content-type": "xxx",
-            "content-length": len(file_data)
-        }
+        headers = {"content-type": "xxx", "content-length": len(file_data)}
         x = io.BytesIO(file_data)
         file = UploadFile(x, headers=headers, filename="test.xxx")
         files.append(file)
@@ -66,7 +64,7 @@ def audio_sample_model_list():
             bit_rate=None,
             duration=None,
             created_at=datetime.now(),
-            updated_at=datetime.now()
+            updated_at=datetime.now(),
         ),
         AudioSample(
             id=uuid4(),
@@ -79,16 +77,17 @@ def audio_sample_model_list():
             bit_rate=None,
             duration=None,
             created_at=datetime.now(),
-            updated_at=datetime.now()
-        )
+            updated_at=datetime.now(),
+        ),
     ]
     return models
 
 
 class TestAudioSampleService:
-
     @pytest.mark.asyncio
-    async def test_batch_upload_audio_samples(self, mock_repository, uploaded_mpeg_file_list, audio_sample_model_list):
+    async def test_batch_upload_audio_samples(
+        self, mock_repository, uploaded_mpeg_file_list, audio_sample_model_list
+    ):
         repo = mock_repository()
         repo.bulk_create.return_value = audio_sample_model_list
 
@@ -96,18 +95,26 @@ class TestAudioSampleService:
 
         assert len(audio_sample_model_list) == len(uploaded_mpeg_file_list)
 
-        with patch('builtins.open', new=MagicMock()) as mock_open, patch("os.mkdir", new=MagicMock()) as os_mkdir:
+        with patch("builtins.open", new=MagicMock()) as mock_open, patch(
+            "os.mkdir", new=MagicMock()
+        ) as os_mkdir:
             service = AudioSampleService(repo)
 
             result = await service.batch_upload_audio_samples(
-                uuid4(), uploaded_mpeg_file_list, background_tasks)
+                uuid4(), uploaded_mpeg_file_list, background_tasks
+            )
 
             mock_open.assert_called()
             os_mkdir.assert_called()
             assert result.success is True
 
     @pytest.mark.asyncio
-    async def test_batch_upload_audio_samples_invalid_content_type(self, mock_repository, uploaded_invalid_file_list, audio_sample_model_list):
+    async def test_batch_upload_audio_samples_invalid_content_type(
+        self,
+        mock_repository,
+        uploaded_invalid_file_list,
+        audio_sample_model_list,
+    ):
         repo = mock_repository()
         repo.bulk_create.return_value = audio_sample_model_list
 
@@ -116,7 +123,8 @@ class TestAudioSampleService:
         service = AudioSampleService(repo)
 
         result = await service.batch_upload_audio_samples(
-            uuid4(), uploaded_invalid_file_list, background_tasks)
+            uuid4(), uploaded_invalid_file_list, background_tasks
+        )
 
         assert result.success is False
 

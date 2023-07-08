@@ -26,7 +26,7 @@ import os
 # from app.models.audio_sample import Label
 
 
-class AudioSampleService():
+class AudioSampleService:
     ACCEPTED_FILE_TYPES = ["audio/mpeg"]
 
     def __init__(self, audio_sample_repo: AudioSampleRepository) -> None:
@@ -44,7 +44,6 @@ class AudioSampleService():
     def _make_insert_models(
         self, dataset_id: UUID, audio_sample_files: list[UploadFile]
     ) -> list[AudioSampleCreate]:
-
         try:
             audio_sample_create_models: list[AudioSampleCreate] = []
 
@@ -56,7 +55,9 @@ class AudioSampleService():
                         {"reason": f"invalid file extension: {file.filename}"}
                     )
                 file_path = os.path.join(
-                    STORAGE_AUDIO_SAMPLE_PATH, f"{dataset_id}", f"{file_uuid}{ext}"
+                    STORAGE_AUDIO_SAMPLE_PATH,
+                    f"{dataset_id}",
+                    f"{file_uuid}{ext}",
                 )
 
                 audio_sample_create_models.append(
@@ -112,7 +113,9 @@ class AudioSampleService():
             # trigger background task to process files
             for inserted_model in inserted_models:
                 background_tasks.add_task(
-                    process_queued_audio_sample, self.audio_sample_repo, inserted_model.id
+                    process_queued_audio_sample,
+                    self.audio_sample_repo,
+                    inserted_model.id,
                 )
 
             return ServiceResult(
@@ -203,9 +206,7 @@ class AudioSampleService():
         background_tasks: BackgroundTasks,
     ) -> ServiceResult:
         try:
-            deleted_audio_sample = self.audio_sample_repo.delete(
-                sample_id
-            )
+            deleted_audio_sample = self.audio_sample_repo.delete(sample_id)
             background_tasks.add_task(
                 delete_audio_sample, deleted_audio_sample.path
             )
