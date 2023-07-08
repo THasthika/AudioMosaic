@@ -49,7 +49,7 @@ def get_audio_sample_service(
 
 def get_audio_sample_label_service(
     audio_sample_label_repo: Annotated[
-        AudioSampleLabelRepository, Depends(get_audio_sample_repo)
+        AudioSampleLabelRepository, Depends(get_audio_sample_label_repo)
     ]
 ):
     return AudioSampleLabelService(audio_sample_label_repo)
