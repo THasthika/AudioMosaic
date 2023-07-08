@@ -4,11 +4,22 @@ from typing import Annotated
 
 from app.config.database import get_db
 from app.schemas import LabelItem, LabelCreate, LabelUpdate
+from app.repositories.label import LabelRepository
 from app.services.label import LabelService
 from app.utils.service_result import handle_result
 from sqlalchemy.orm import Session
 
 router = APIRouter()
+
+
+def get_label_repo(db: Annotated[Session, Depends(get_db)]):
+    return LabelRepository(db)
+
+
+def get_label_service(
+    dataset_repo: Annotated[LabelRepository, Depends(get_label_repo)]
+):
+    return LabelService(dataset_repo)
 
 
 @router.get(
@@ -18,9 +29,10 @@ router = APIRouter()
     tags=["Labels"],
 )
 async def list_labels(
-    dataset_id: UUID, db: Annotated[Session, Depends(get_db)]
+    dataset_id: UUID,
+    label_service: Annotated[LabelService, Depends(get_label_service)],
 ):
-    labels = LabelService(db).list_labels_by_dataset_id(dataset_id)
+    labels = label_service.list_labels_by_dataset_id(dataset_id)
     return handle_result(labels)
 
 
@@ -33,11 +45,11 @@ async def list_labels(
 async def create_labels(
     dataset_id: UUID,
     label_create_list: list[LabelCreate],
-    db: Annotated[Session, Depends(get_db)],
+    label_service: Annotated[LabelService, Depends(get_label_service)],
 ):
     for label in label_create_list:
         label.dataset_id = dataset_id
-    labels = LabelService(db).create_labels(label_create_list)
+    labels = label_service.create_labels(label_create_list)
     return handle_result(labels)
 
 
@@ -50,9 +62,9 @@ async def create_labels(
 async def update_label(
     id: UUID,
     label_update: LabelUpdate,
-    db: Annotated[Session, Depends(get_db)],
+    label_service: Annotated[LabelService, Depends(get_label_service)],
 ):
-    updated_label = LabelService(db).update_label(id, label_update)
+    updated_label = label_service.update_label(id, label_update)
     return handle_result(updated_label)
 
 
@@ -62,8 +74,11 @@ async def update_label(
     status_code=status.HTTP_200_OK,
     tags=["Labels"],
 )
-async def delete_label(id: UUID, db: Annotated[Session, Depends(get_db)]):
-    deleted_label = LabelService(db).delete_label(id)
+async def delete_label(
+    id: UUID,
+    label_service: Annotated[LabelService, Depends(get_label_service)],
+):
+    deleted_label = label_service.delete_label(id)
     return handle_result(deleted_label)
 
 
@@ -73,6 +88,9 @@ async def delete_label(id: UUID, db: Annotated[Session, Depends(get_db)]):
     status_code=status.HTTP_200_OK,
     tags=["Labels"],
 )
-async def get_label_by_id(id: UUID, db: Annotated[Session, Depends(get_db)]):
-    label = LabelService(db).get_label(id)
+async def get_label_by_id(
+    id: UUID,
+    label_service: Annotated[LabelService, Depends(get_label_service)],
+):
+    label = label_service.get_label(id)
     return handle_result(label)
