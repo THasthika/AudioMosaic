@@ -1,9 +1,10 @@
-import os
-from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy import create_engine, event
+from sqlalchemy.engine import Engine
+from sqlalchemy.orm import sessionmaker, declarative_base
 
-DATABASE_URL = os.getenv("DATABASE_URL")
+from sqlite3 import Connection as SQLite3Connection
+
+from .app import DATABASE_URL
 
 engine = create_engine(
     DATABASE_URL,
@@ -15,7 +16,16 @@ SessionLocal = sessionmaker(
     bind=engine,
 )
 
+
 Base = declarative_base()
+
+
+@event.listens_for(Engine, "connect")
+def _set_sqlite_pragma(dbapi_connection, connection_record):
+    if isinstance(dbapi_connection, SQLite3Connection):
+        cursor = dbapi_connection.cursor()
+        cursor.execute("PRAGMA foreign_keys=ON;")
+        cursor.close()
 
 
 def get_db():

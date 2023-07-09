@@ -6,7 +6,7 @@ from sqlalchemy import pool
 from alembic import context
 
 from app.config.database import DATABASE_URL, get_metadata
-from app.models import *
+from app.models import *  # noqa: F403, F401
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

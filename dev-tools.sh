@@ -9,15 +9,20 @@ _make_migration() {
         exit 1
     fi
     # Call alembic revision command with the provided string
-    DATABASE_URL=$DATABASE_URL alembic revision --autogenerate -m "$1"
+    DATABASE_URL=$DATABASE_URL poetry run alembic revision --autogenerate -m "$1"
 }
 
 _migrate_up() {
-    DATABASE_URL=$DATABASE_URL alembic upgrade head
+    DATABASE_URL=$DATABASE_URL poetry run alembic upgrade head
 }
 
 _run() {
-    DATABASE_URL=$DATABASE_URL uvicorn app.main:app --reload
+    (cd ./frontend && pnpm run build)
+    DATABASE_URL=$DATABASE_URL poetry run uvicorn app.main:app --reload
+}
+
+_clear_storage() {
+    rm -r storage/audio_samples/*
 }
 
 # Check if the argument count is less than 1
@@ -40,6 +45,9 @@ case "$command" in
         ;;
     run)
         _run
+        ;;
+    clear_storage)
+        _clear_storage
         ;;
     # # Add more commands here
     # other_command)
